@@ -1,48 +1,116 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chỉnh sửa thiếu chỉ định CLS khoa Nội</title>
+    <title>Công cụ Lọc Mã LK Google Sheets</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 30px; background-color: #f0f8ff; }
-        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        h2 { color: #333; }
-        .controls { background-color: #e9ecef; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ddd; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content:center}
-        select, button { padding: 10px; font-size: 16px; border-radius: 4px; border: 1px solid #ccc; }
+        /* Đảm bảo padding không làm tăng kích thước phần tử */
+        * { box-sizing: border-box; }
+
+        /* Ép toàn bộ trang web chiếm chính xác 100% màn hình, không cuộn ngoài */
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 15px; 
+            background-color: #f0f8ff; 
+            width: 100vw; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; /* Cấm cuộn trang tổng */
+        }
+
+        /* Container chính tự động co giãn lấp đầy phần không gian còn lại */
+        .container { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+            display: flex; 
+            flex-direction: column; 
+            flex: 1; 
+            overflow: hidden; /* Giữ mọi thứ nằm gọn trong khung trắng */
+        }
+
+        h2 { color: #333; margin-top: 0; flex-shrink: 0; }
+
+        /* Thanh điều khiển co giãn responsive cho laptop nhỏ */
+        .controls { 
+            background-color: #e9ecef; 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin-bottom: 15px; 
+            border: 1px solid #ddd; 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 15px; 
+justify-content:center;
+            align-items: center; 
+            flex-shrink: 0; /* Không bị bóp méo khi bảng quá dài */
+        }
+        select, button { padding: 8px 12px; font-size: 15px; border-radius: 4px; border: 1px solid #ccc; }
         button { background-color: #4CAF50; color: white; border: none; cursor: pointer; font-weight: bold; padding: 10px 20px; }
         button:hover { background-color: #45a049; }
         button:disabled { background-color: #ccc; cursor: not-allowed; }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        th { background-color: #2196F3; color: white; position: sticky; top: 0; z-index: 1; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        tr:hover { background-color: #f1f1f1; }
-        
-        .check-column { text-align: center; width: 80px; }
-        input[type="checkbox"] { transform: scale(1.5); cursor: pointer; }
-        .saving { background-color: #ffe4b5 !important; } 
-        
-        #message { font-weight: bold; margin-bottom: 15px; font-size: 16px;text-align:center }
+        .filter-group { border-left: 2px solid #ccc; padding-left: 15px; }
+
+        #message { font-weight: bold; margin-bottom: 5px; font-size: 15px; flex-shrink: 0; text-align:center}
+        .auto-refresh-text { font-size: 13px; color: #666; font-style: italic; margin-bottom: 10px; display: none; flex-shrink: 0; text-align:center}
         .loading { color: #ff9900; }
         .error { color: red; }
         .success { color: green; }
-        .filter-group { border-left: 2px solid #ccc; padding-left: 15px; margin-left: 5px; }
+
+        /* --- VÙNG CUỘN RIÊNG CHO BẢNG --- */
+        .table-wrapper {
+            flex: 1; /* Chiếm toàn bộ chiều cao còn lại của khung trắng */
+            overflow: auto; /* Chỉ hiện thanh cuộn ở khu vực này */
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+
+        table { width: 100%; border-collapse: collapse; margin: 0; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; white-space: nowrap; /* Chống rớt dòng làm xấu bảng */ }
+        th { 
+            background-color: #2196F3; 
+            color: white; 
+            position: sticky; 
+            top: 0; 
+            z-index: 2; 
+            box-shadow: 0 2px 2px -1px rgba(0,0,0,0.4); /* Tạo bóng đổ nhẹ cho tiêu đề khi cuộn */
+        }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        tr:hover { background-color: #f1f1f1; }
+        
+        .check-column { text-align: center; width: 60px; min-width: 60px; }
+        input[type="checkbox"] { transform: scale(1.5); cursor: pointer; }
+        .saving { background-color: #ffe4b5 !important; } 
+
+        .footer {
+            text-align: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            color: #666;
+            font-size: 13px;
+            border-top: 1px solid #ddd;
+            flex-shrink: 0; /* Ép Footer luôn nằm dưới cùng */
+        }
     </style>
 </head>
 <body>
 
-<div class="container" >
-    <h2 style="text-align:center">Chỉnh sửa thiếu chỉ định CLS khoa Nội</h2>
+<div class="container">
+    <h2>Chỉnh sửa chấn đoán khoa Nội </h2>
     
-    <div class="controls" >
+    <div class="controls">
         <div>
-            <label for="sheetSelect"><strong>1. Trang tính: </strong></label>
-            <select id="sheetSelect" disabled>
+            <label for="sheetSelect"><strong>1. Chọn tháng: </strong></label>
+            <select id="sheetSelect" disabled onchange="resetAutoRefresh()">
                 <option value="">Đang tải...</option>
             </select>
-            <button id="btnFilter" onclick="fetchData()" disabled>Tải Dữ Liệu</button>
+            <button id="btnFilter" onclick="fetchData(false)" disabled>Tải Dữ Liệu</button>
         </div>
         
         <div class="filter-group">
@@ -56,12 +124,18 @@
     </div>
 
     <div id="message"></div>
+    <div id="autoRefreshText" class="auto-refresh-text">🔄 Dữ liệu đang được tự động cập nhật mỗi 30 giây...</div>
     
-    <div style="overflow-x:auto; max-height: 600px; border-bottom: 1px solid #ddd;">
+    <div class="table-wrapper">
         <table id="dataTable" style="display: none;">
             <thead id="tableHead"></thead>
             <tbody id="tableBody"></tbody>
         </table>
+    </div>
+
+    <div class="footer">
+        &copy; 2026 - Công cụ được phát triển bởi <strong>Thanh Tòng</strong>.<br>
+        Phòng KHNV
     </div>
 </div>
 
@@ -73,11 +147,12 @@
     const statusFilter = document.getElementById('statusFilter');
     const btnFilter = document.getElementById('btnFilter');
     const msgDiv = document.getElementById('message');
+    const autoRefreshText = document.getElementById('autoRefreshText');
     const table = document.getElementById('dataTable');
 
-    // Biến toàn cục để lưu trữ dữ liệu đã tải về
     let globalData = [];
     let currentSelectedSheet = '';
+    let autoRefreshInterval = null; 
 
     window.onload = function() {
         msgDiv.className = 'loading';
@@ -109,15 +184,28 @@
             });
     }
 
-    function fetchData() {
+    function resetAutoRefresh() {
+        if (autoRefreshInterval) {
+            clearInterval(autoRefreshInterval);
+            autoRefreshInterval = null;
+        }
+        autoRefreshText.style.display = 'none';
+        table.style.display = 'none';
+        msgDiv.innerText = 'Vui lòng bấm "Tải Dữ Liệu" cho trang tính mới.';
+        msgDiv.className = 'loading';
+    }
+
+    function fetchData(isAuto = false) {
         currentSelectedSheet = sheetSelect.value;
         if (!currentSelectedSheet) return;
 
-        msgDiv.className = 'loading';
-        msgDiv.innerText = `Đang lấy dữ liệu từ trang "${currentSelectedSheet}"...`;
-        table.style.display = 'none'; 
-        btnFilter.disabled = true; 
-        statusFilter.disabled = true;
+        if (!isAuto) {
+            msgDiv.className = 'loading';
+            msgDiv.innerText = `Đang lấy dữ liệu từ trang "${currentSelectedSheet}"...`;
+            table.style.display = 'none'; 
+            btnFilter.disabled = true; 
+            statusFilter.disabled = true;
+        }
 
         fetch(`${API_URL}?sheetName=${encodeURIComponent(currentSelectedSheet)}`)
             .then(response => response.json())
@@ -125,48 +213,58 @@
                 btnFilter.disabled = false; 
                 if (result.status === 'success') {
                     if (result.data.length > 0) {
-                        // Lưu dữ liệu vào biến toàn cục để bộ lọc xử lý
                         globalData = result.data;
-                        statusFilter.disabled = false; // Mở khóa bộ lọc trạng thái
-                        statusFilter.value = 'all'; // Trả bộ lọc về mặc định
+                        statusFilter.disabled = false; 
                         
-                        applyFilter(); // Gọi hàm vẽ bảng
+                        if (!isAuto) statusFilter.value = 'all'; 
                         
+                        applyFilter(); 
+
+                        if (!isAuto && !autoRefreshInterval) {
+                            autoRefreshText.style.display = 'block';
+                            autoRefreshInterval = setInterval(() => {
+                                fetchData(true); 
+                            }, 30000); 
+                        }
                     } else {
                         globalData = [];
                         msgDiv.innerText = `Không có dữ liệu thỏa mãn ở trang "${currentSelectedSheet}".`;
                         msgDiv.className = 'error';
+                        resetAutoRefresh();
                     }
                 } else {
                     msgDiv.innerText = 'Lỗi: ' + result.message;
                     msgDiv.className = 'error';
+                    resetAutoRefresh();
                 }
             })
             .catch(error => {
                 btnFilter.disabled = false;
-                msgDiv.innerText = 'Lỗi khi tải dữ liệu!';
-                msgDiv.className = 'error';
+                if (!isAuto) {
+                    msgDiv.innerText = 'Lỗi khi tải dữ liệu!';
+                    msgDiv.className = 'error';
+                }
             });
     }
 
-    // Hàm áp dụng bộ lọc và vẽ lại bảng
     function applyFilter() {
         const filterType = statusFilter.value;
         
-        // Lọc dữ liệu dựa trên dropdown
         const filteredData = globalData.filter(row => {
             let isChecked = (row['Check'] === 'TRUE' || row['Check'] === true || row['Check'] === 'true');
             if (filterType === 'checked') return isChecked;
             if (filterType === 'unchecked') return !isChecked;
-            return true; // Nếu chọn 'all'
+            return true; 
         });
 
-        // Hiển thị thông báo
-        msgDiv.innerText = `Đang hiển thị ${filteredData.length} / ${globalData.length} kết quả (Trang: ${currentSelectedSheet}).`;
+        const now = new Date();
+        const timeString = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0') + ':' + now.getSeconds().toString().padStart(2, '0');
+
+        msgDiv.innerHTML = `Đang hiển thị ${filteredData.length} / ${globalData.length} kết quả (Cập nhật lúc: ${timeString}).`;
         msgDiv.className = 'success';
 
         if (filteredData.length === 0) {
-            document.getElementById('tableBody').innerHTML = '<tr><td colspan="100%" style="text-align:center;">Không có dữ liệu nào khớp với bộ lọc này.</td></tr>';
+            document.getElementById('tableBody').innerHTML = '<tr><td colspan="100%" style="text-align:center; padding: 20px;">Không có dữ liệu nào khớp với bộ lọc này.</td></tr>';
             table.style.display = 'table';
             return;
         }
@@ -177,7 +275,6 @@
         let headers = Object.keys(globalData[0]).filter(h => h !== '_rowIndex');
         if (!headers.includes('Check')) headers.unshift('Check'); 
 
-        // Vẽ Header
         let headerRow = '<tr>';
         headers.forEach(h => {
             if(h === 'Check') headerRow += `<th class="check-column">Trạng thái</th>`;
@@ -186,7 +283,6 @@
         headerRow += '</tr>';
         thead.innerHTML = headerRow;
 
-        // Vẽ Body với dữ liệu ĐÃ ĐƯỢC LỌC
         let bodyRows = '';
         filteredData.forEach(row => {
             let rowIndex = row['_rowIndex'];
@@ -226,15 +322,13 @@
                 trElement.classList.remove('saving');
                 
                 if (result.status === 'success') {
-                    // Cập nhật lại biến globalData để nếu đổi bộ lọc, nó vẫn nhớ trạng thái
                     let rowToUpdate = globalData.find(r => r['_rowIndex'] === rowIndex);
                     if (rowToUpdate) {
                         rowToUpdate['Check'] = isChecked ? 'TRUE' : 'FALSE';
                     }
                     
-                    // Nếu đang ở chế độ lọc "Chưa check" mà tích vào, dòng đó sẽ tự động ẩn đi cho gọn mắt
                     if (statusFilter.value !== 'all') {
-                        setTimeout(() => applyFilter(), 500); // Đợi nửa giây rồi ẩn dòng đi
+                        setTimeout(() => applyFilter(), 500); 
                     }
                 } else {
                     alert('Lỗi lưu trạng thái: ' + result.message);
