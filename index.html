@@ -236,7 +236,7 @@
                         applyFilter();
                         if (!isAuto && !autoRefreshInterval) {
                             autoRefreshText.style.display = 'block';
-                            autoRefreshInterval = setInterval(() => fetchData(true), 30000);
+                            autoRefreshInterval = setInterval(() => fetchData(true), 300000);
                         }
                     } else {
                         msgDiv.innerText = 'Trang không có dữ liệu.'; msgDiv.className = 'error';
