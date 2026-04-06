@@ -6,28 +6,225 @@
     <title>Công cụ Lọc Mã LK Google Sheets</title>
     <style>
         * { box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; margin: 0; padding: 15px; background-color: #f0f8ff; width: 100vw; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 15px; 
+            background-color: #f0f8ff; 
+            width: 100vw; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+        }
+        .container { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+            display: flex; 
+            flex-direction: column; 
+            flex: 1; 
+            overflow: hidden; 
+            position: relative;
+        }
+
         h2 { color: #333; margin-top: 0; flex-shrink: 0; }
-        .controls { background-color: #e9ecef; padding: 15px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #ddd; display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; align-items: center; flex-shrink: 0; }
-        select, button { padding: 8px 12px; font-size: 15px; border-radius: 4px; border: 1px solid #ccc; }
-        button { background-color: #4CAF50; color: white; border: none; cursor: pointer; font-weight: bold; padding: 10px 20px; }
-        button:hover { background-color: #45a049; }
+
+        .controls { 
+            background-color: #e9ecef; 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin-bottom: 15px; 
+            border: 1px solid #ddd; 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 15px; 
+            justify-content: center; 
+            align-items: center; 
+            flex-shrink: 0; 
+        }
+        select, button { 
+            padding: 8px 12px; 
+            font-size: 15px; 
+            border-radius: 4px; 
+            border: 1px solid #ccc; 
+        }
+        button { 
+            background-color: #4CAF50; 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: bold; 
+            padding: 10px 20px; 
+        }
+        button:hover:not(:disabled) { background-color: #45a049; }
         button:disabled { background-color: #ccc; cursor: not-allowed; }
+
         .filter-group { border-left: 2px solid #ccc; padding-left: 15px; }
-        #message { font-weight: bold; margin-bottom: 5px; font-size: 15px; flex-shrink: 0; text-align: center; }
-        .auto-refresh-text { font-size: 13px; color: #666; font-style: italic; margin-bottom: 10px; display: none; flex-shrink: 0; text-align: center; }
-        .loading { color: #ff9900; } .error { color: red; } .success { color: green; }
-        .table-wrapper { flex: 1; overflow: auto; border: 1px solid #ddd; border-radius: 4px; background-color: #fff; }
+
+        #message { 
+            font-weight: bold; 
+            margin-bottom: 5px; 
+            font-size: 15px; 
+            flex-shrink: 0; 
+            text-align: center; 
+        }
+
+        /* Dump Truck Loader */
+        .loader-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255, 255, 255, 0.92);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            border-radius: 8px;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .truck-container {
+            position: relative;
+            width: 220px;
+            height: 100px;
+        }
+        .truck {
+            position: absolute;
+            left: -50px;
+            animation: drive 2.8s linear infinite;
+        }
+        .truck-body {
+            width: 140px;
+            height: 50px;
+            background: #2196F3;
+            border-radius: 8px 8px 0 0;
+            position: relative;
+        }
+        .truck-cab {
+            width: 50px;
+            height: 35px;
+            background: #1976D2;
+            position: absolute;
+            left: 90px;
+            top: 10px;
+            border-radius: 6px;
+        }
+        .dump-bed {
+            width: 90px;
+            height: 28px;
+            background: #1565C0;
+            position: absolute;
+            left: 5px;
+            top: 22px;
+            border-radius: 4px;
+            animation: dump 2.8s linear infinite;
+            transform-origin: right center;
+        }
+        .wheel {
+            width: 28px;
+            height: 28px;
+            background: #333;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -14px;
+            border: 4px solid #fff;
+            box-shadow: 0 0 0 6px #2196F3;
+            animation: wheel-spin 0.6s linear infinite;
+        }
+        .wheel.front { left: 25px; }
+        .wheel.rear { left: 85px; }
+
+        .load {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #FF9800;
+            border-radius: 50%;
+            opacity: 0;
+            animation: falling 2.8s linear infinite;
+        }
+
+        @keyframes drive { 0% { left: -50px; } 100% { left: 280px; } }
+        @keyframes dump { 0%,60% { transform: rotate(0deg); } 70%,85% { transform: rotate(-35deg); } 100% { transform: rotate(0deg); } }
+        @keyframes wheel-spin { to { transform: rotate(360deg); } }
+        @keyframes falling { 
+            0% { opacity: 0; transform: translateY(-10px); }
+            65% { opacity: 1; }
+            80% { transform: translateY(60px); }
+            100% { opacity: 0; transform: translateY(80px); }
+        }
+
+        .loader-text {
+            font-size: 17px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* Copy mã bệnh */
+        .copyable {
+            cursor: pointer;
+            position: relative;
+        }
+        .copyable:hover {
+            background-color: #e3f2fd !important;
+            color: #1976D2;
+        }
+        .copy-toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .loading { color: #ff9900; } 
+        .error { color: red; } 
+        .success { color: green; }
+
+        .table-wrapper { 
+            flex: 1; 
+            overflow: auto; 
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+            background-color: #fff; 
+        }
         table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; white-space: nowrap; }
-        th { background-color: #2196F3; color: white; position: sticky; top: 0; z-index: 2; box-shadow: 0 2px 2px -1px rgba(0,0,0,0.4); }
-        tr:nth-child(even) { background-color: #f9f9f9; } tr:hover { background-color: #f1f1f1; }
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 10px; 
+            text-align: left; 
+            white-space: nowrap; 
+        }
+        th { 
+            background-color: #2196F3; 
+            color: white; 
+            position: sticky; 
+            top: 0; 
+            z-index: 2; 
+        }
+        tr:nth-child(even) { background-color: #f9f9f9; } 
+        tr:hover { background-color: #f1f1f1; }
         .check-column { text-align: center; width: 60px; min-width: 60px; }
         input[type="checkbox"] { transform: scale(1.5); cursor: pointer; }
         .saving { background-color: #ffe4b5 !important; }
 
-        /* === FOOTER ĐÃ CHỈNH Ở GIỮA TRANG === */
+        /* Bảng thống kê modal */
+        #modalStatsTable { width: 100%; border-collapse: collapse; font-size: 15px; }
+        #modalStatsTable th, #modalStatsTable td { border: 1px solid #2196F3; padding: 10px; text-align: left; }
+        #modalStatsTable th { background: #2196F3; color: white; }
+        #modalStatsTable th:last-child { text-align: right; }
+        #modalStatsTable tr.total { background: #f8d7da; font-weight: bold; color: #d32f2f; }
+
         .footer {
             text-align: center;
             margin: 20px auto 0;
@@ -39,21 +236,30 @@
             max-width: 80%;
             align-self: center;
         }
-
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); }
-        .modal-content { background-color: #fff; margin: 5% auto; padding: 20px; border-radius: 12px; width: 90%; max-width: 700px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+        .modal { 
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0; top: 0; 
+            width: 100%; height: 100%; 
+            background-color: rgba(0,0,0,0.6); 
+        }
+        .modal-content { 
+            background-color: #fff; 
+            margin: 5% auto; 
+            padding: 20px; 
+            border-radius: 12px; 
+            width: 90%; 
+            max-width: 700px; 
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3); 
+        }
         .close { color: #aaa; float: right; font-size: 32px; font-weight: bold; cursor: pointer; }
         .close:hover { color: #f00; }
-        #modalStatsTable { width: 100%; border-collapse: collapse; font-size: 15px; }
-        #modalStatsTable th, #modalStatsTable td { border: 1px solid #ffeaa7; padding: 10px; text-align: left; }
-        #modalStatsTable th 
-        #modalStatsTable tr.total { background: #f8d7da; font-weight: bold; color: #d32f2f; }
     </style>
 </head>
 <body>
 <div class="container">
     <h2>Chỉnh sửa chẩn đoán khoa Nội</h2>
-
     <div class="controls">
         <div>
             <label for="sheetSelect"><strong>1. Chọn tháng: </strong></label>
@@ -62,29 +268,47 @@
             </select>
             <button id="btnFilter" onclick="fetchData(false)" disabled>Tải Dữ Liệu</button>
         </div>
-
         <div class="filter-group">
             <label for="statusFilter"><strong>2. Lọc trạng thái: </strong></label>
             <select id="statusFilter" onchange="applyFilter()" disabled>
                 <option value="all">Hiển thị Tất cả</option>
-                <option value="unchecked">Chỉ hiện Chưa check ❌</option>
+                <option value="unchecked" selected>Chỉ hiện Chưa check ❌</option>
                 <option value="checked">Chỉ hiện Đã check ✅</option>
             </select>
         </div>
-
         <div class="filter-group">
             <label for="doctorFilter"><strong>3. Lọc theo Bác sĩ: </strong></label>
             <select id="doctorFilter" onchange="applyFilter()" disabled>
                 <option value="all">Tất cả Bác sĩ</option>
             </select>
         </div>
-
         <button onclick="showStatsModal()" style="background:#2196F3;">📊 Xem Thống Kê</button>
+        <button onclick="manualRefresh()" style="background:#FF9800;" id="btnRefresh">🔄 Làm mới dữ liệu</button>
     </div>
 
     <div id="message"></div>
-    <div id="autoRefreshText" class="auto-refresh-text">🔄 Dữ liệu đang được tự động cập nhật mỗi 5 phút...</div>
-    <div style="text-align:center;color:red;margin-top:10px">SAU KHI KẾT THÚC BỆNH ÁN NHỚ <strong>TICK VÀO Ô TRẠNG THÁI ✔️</strong></div>
+    <div style="text-align:center;color:red;margin-top:10px">
+        SAU KHI KẾT THÚC BỆNH ÁN NHỚ <strong>TICK VÀO Ô TRẠNG THÁI ✔️</strong><br>
+        <span style="color:#1976D2; font-size:14px;">Click vào ô <strong>Mã bệnh</strong> để tự động copy</span>
+    </div>
+
+    <!-- Dump Truck Loader -->
+    <div id="loader" class="loader-overlay">
+        <div class="truck-container">
+            <div class="truck">
+                <div class="truck-body">
+                    <div class="dump-bed"></div>
+                    <div class="truck-cab"></div>
+                </div>
+                <div class="wheel front"></div>
+                <div class="wheel rear"></div>
+            </div>
+            <div class="load" style="left: 80px; animation-delay: 0.2s;"></div>
+            <div class="load" style="left: 95px; animation-delay: 0.5s;"></div>
+            <div class="load" style="left: 110px; animation-delay: 0.8s;"></div>
+        </div>
+        <div id="loader-text" class="loader-text">Đang tải dữ liệu từ Google Sheets...</div>
+    </div>
 
     <div class="table-wrapper">
         <table id="dataTable" style="display: none;">
@@ -93,7 +317,6 @@
         </table>
     </div>
 
-    <!-- FOOTER ĐÃ ĐƯỢC ĐẨY VÀO GIỮA TRANG -->
     <div class="footer">
         &copy; 2026 - Công cụ được phát triển bởi <strong>Thanh Tòng</strong>.<br>Phòng KHNV
     </div>
@@ -111,20 +334,52 @@
     </div>
 </div>
 
+<!-- Toast thông báo copy -->
+<div id="copyToast" class="copy-toast">
+    ✅ Đã copy mã bệnh!
+</div>
+
 <script>
     const API_URL = 'https://script.google.com/macros/s/AKfycbwzbnt1rpcXDBqovIyBmwuabtBncF6-fY9loH8WdsoJ54fUyJ0D__zMucAbskj62avu/exec';
-
     let globalData = [];
     let currentSelectedSheet = '';
-    let autoRefreshInterval = null;
     let doctorColumnName = null;
 
     const sheetSelect = document.getElementById('sheetSelect');
     const statusFilter = document.getElementById('statusFilter');
     const doctorFilter = document.getElementById('doctorFilter');
     const btnFilter = document.getElementById('btnFilter');
+    const btnRefresh = document.getElementById('btnRefresh');
     const msgDiv = document.getElementById('message');
-    const autoRefreshText = document.getElementById('autoRefreshText');
+    const loader = document.getElementById('loader');
+    const loaderText = document.getElementById('loader-text');
+    const copyToast = document.getElementById('copyToast');
+
+    function showLoader(text = "Đang tải dữ liệu...") {
+        loaderText.innerText = text;
+        loader.style.display = 'flex';
+    }
+
+    function hideLoader() {
+        loader.style.display = 'none';
+    }
+
+    function showCopyToast() {
+        copyToast.style.display = 'flex';
+        setTimeout(() => {
+            copyToast.style.display = 'none';
+        }, 2000);
+    }
+
+    // Hàm copy text vào clipboard
+    function copyToClipboard(text) {
+        if (!text) return;
+        navigator.clipboard.writeText(text.trim()).then(() => {
+            showCopyToast();
+        }).catch(() => {
+            alert('Không thể copy: ' + text);
+        });
+    }
 
     window.onload = function () {
         msgDiv.className = 'loading';
@@ -132,17 +387,26 @@
         fetch(API_URL + '?action=getSheets').then(r => r.json()).then(result => {
             if (result.status === 'success') {
                 sheetSelect.innerHTML = '';
-                result.sheets.forEach(s => { let o = document.createElement('option'); o.value = s; o.text = s; sheetSelect.appendChild(o); });
-                sheetSelect.disabled = false; btnFilter.disabled = false;
-                msgDiv.innerText = 'Đã tải xong! Vui lòng bấm "Tải Dữ Liệu".'; msgDiv.className = 'success';
+                result.sheets.forEach(s => { 
+                    let o = document.createElement('option'); 
+                    o.value = s; 
+                    o.text = s; 
+                    sheetSelect.appendChild(o); 
+                });
+                sheetSelect.disabled = false; 
+                btnFilter.disabled = false;
+                msgDiv.innerText = 'Đã tải xong! Vui lòng bấm "Tải Dữ Liệu".'; 
+                msgDiv.className = 'success';
             }
-        }).catch(() => { msgDiv.innerText = 'Lỗi kết nối API.'; msgDiv.className = 'error'; });
+        }).catch(() => { 
+            msgDiv.innerText = 'Lỗi kết nối API.'; 
+            msgDiv.className = 'error'; 
+        });
     };
 
     function resetAutoRefresh() {
-        if (autoRefreshInterval) clearInterval(autoRefreshInterval);
-        autoRefreshInterval = null; autoRefreshText.style.display = 'none';
-        doctorFilter.innerHTML = '<option value="all">Tất cả Bác sĩ</option>'; doctorFilter.disabled = true;
+        doctorFilter.innerHTML = '<option value="all">Tất cả Bác sĩ</option>'; 
+        doctorFilter.disabled = true;
         statusFilter.disabled = true;
     }
 
@@ -174,9 +438,22 @@
         });
         doctorFilter.innerHTML = '<option value="all">Tất cả Bác sĩ</option>';
         Array.from(doctors).sort().forEach(d => {
-            let o = document.createElement('option'); o.value = d; o.textContent = d; doctorFilter.appendChild(o);
+            let o = document.createElement('option'); 
+            o.value = d; 
+            o.textContent = d; 
+            doctorFilter.appendChild(o);
         });
         doctorFilter.disabled = false;
+    }
+
+    function isCodeColumn(header) {
+        const lower = header.toLowerCase().trim();
+        return lower.includes('mã bệnh') || 
+               lower.includes('mã bn') || 
+               lower.includes('mabenh') || 
+               lower.includes('mabn') ||
+               lower === 'mã' ||
+               lower.includes('code');
     }
 
     function updateModalStatistics() {
@@ -217,33 +494,61 @@
         document.getElementById('statsModal').style.display = 'none';
     }
 
+    function manualRefresh() {
+        if (!currentSelectedSheet) {
+            alert('Vui lòng chọn tháng và bấm "Tải Dữ Liệu" trước!');
+            return;
+        }
+        fetchData(false);
+    }
+
     function fetchData(isAuto = false) {
         currentSelectedSheet = sheetSelect.value;
         if (!currentSelectedSheet) return;
+
+        showLoader(isAuto ? "Đang làm mới dữ liệu..." : "Đang tải dữ liệu từ Google Sheets...");
+
+        btnFilter.disabled = true;
+        btnRefresh.disabled = true;
+
         if (!isAuto) {
             msgDiv.className = 'loading';
             msgDiv.innerText = `Đang lấy dữ liệu từ "${currentSelectedSheet}"...`;
         }
+
         fetch(`${API_URL}?sheetName=${encodeURIComponent(currentSelectedSheet)}`)
             .then(r => r.json())
             .then(result => {
+                hideLoader();
+                btnFilter.disabled = false;
+                btnRefresh.disabled = false;
+
                 if (result.status === 'success') {
                     globalData = result.data || [];
                     if (globalData.length > 0) {
                         statusFilter.disabled = false;
                         populateDoctorFilter();
-                        if (!isAuto) { statusFilter.value = 'all'; doctorFilter.value = 'all'; }
-                        applyFilter();
-                        if (!isAuto && !autoRefreshInterval) {
-                            autoRefreshText.style.display = 'block';
-                            autoRefreshInterval = setInterval(() => fetchData(true), 300000);
+                        if (!isAuto) { 
+                            statusFilter.value = 'unchecked'; 
+                            doctorFilter.value = 'all'; 
                         }
+                        applyFilter();
                     } else {
-                        msgDiv.innerText = 'Trang không có dữ liệu.'; msgDiv.className = 'error';
+                        msgDiv.innerText = 'Trang không có dữ liệu.'; 
+                        msgDiv.className = 'error';
                     }
+                } else {
+                    msgDiv.innerText = 'Lỗi khi lấy dữ liệu từ server.'; 
+                    msgDiv.className = 'error';
                 }
             })
-            .catch(() => { msgDiv.innerText = 'Lỗi kết nối!'; msgDiv.className = 'error'; });
+            .catch(() => { 
+                hideLoader();
+                btnFilter.disabled = false;
+                btnRefresh.disabled = false;
+                msgDiv.innerText = 'Lỗi kết nối! Vui lòng kiểm tra mạng.'; 
+                msgDiv.className = 'error'; 
+            });
     }
 
     function applyFilter() {
@@ -254,6 +559,7 @@
             const isChecked = (row['Check'] === 'TRUE' || row['Check'] === true || row['Check'] === 'true');
             if (statusType === 'checked' && !isChecked) return false;
             if (statusType === 'unchecked' && isChecked) return false;
+            
             if (selectedDoctor !== 'all' && doctorColumnName) {
                 let docStr = String(row[doctorColumnName] || '').trim();
                 const doctorsInRow = docStr.split(/[,;\/]/).map(d => d.trim()).filter(Boolean);
@@ -263,7 +569,10 @@
         });
 
         const now = new Date();
-        const timeString = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0') + ':' + now.getSeconds().toString().padStart(2,'0');
+        const timeString = now.getHours().toString().padStart(2,'0') + ':' + 
+                          now.getMinutes().toString().padStart(2,'0') + ':' + 
+                          now.getSeconds().toString().padStart(2,'0');
+        
         msgDiv.innerHTML = `Đang hiển thị ${filteredData.length} / ${globalData.length} kết quả (Cập nhật lúc: ${timeString}).`;
         msgDiv.className = 'success';
 
@@ -280,7 +589,11 @@
         if (!headers.includes('Check')) headers.unshift('Check');
 
         let headerRow = '<tr>';
-        headers.forEach(h => headerRow += h === 'Check' ? `<th class="check-column">Trạng thái</th>` : `<th>${h}</th>`);
+        headers.forEach(h => {
+            headerRow += h === 'Check' ? 
+                `<th class="check-column">Trạng thái</th>` : 
+                `<th>${h}</th>`;
+        });
         headerRow += '</tr>';
         thead.innerHTML = headerRow;
 
@@ -289,11 +602,14 @@
             const rowIndex = row['_rowIndex'];
             bodyRows += `<tr id="row-${rowIndex}">`;
             headers.forEach(h => {
+                const cellValue = row[h] !== undefined ? row[h] : '';
                 if (h === 'Check') {
                     const checked = (row[h] === 'TRUE' || row[h] === true) ? 'checked' : '';
                     bodyRows += `<td class="check-column"><input type="checkbox" ${checked} onchange="updateCheckStatus('${currentSelectedSheet}', ${rowIndex}, this)"></td>`;
+                } else if (isCodeColumn(h)) {
+                    bodyRows += `<td class="copyable" onclick="copyToClipboard('${String(cellValue).replace(/'/g, "\\'")}')">${cellValue}</td>`;
                 } else {
-                    bodyRows += `<td>${row[h] !== undefined ? row[h] : ''}</td>`;
+                    bodyRows += `<td>${cellValue}</td>`;
                 }
             });
             bodyRows += '</tr>';
@@ -312,22 +628,30 @@
             let now = new Date();
             dateStr = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
         }
+
         fetch(`${API_URL}?action=updateCheck&sheetName=${encodeURIComponent(sheetName)}&rowIndex=${rowIndex}&isChecked=${isChecked}`)
             .then(r => r.json())
             .then(result => {
-                checkboxElement.disabled = false; trElement.classList.remove('saving');
+                checkboxElement.disabled = false; 
+                trElement.classList.remove('saving');
                 if (result.status === 'success') {
                     let rowToUpdate = globalData.find(r => r['_rowIndex'] === rowIndex);
-                    if (rowToUpdate) { rowToUpdate['Check'] = isChecked ? 'TRUE' : 'FALSE'; rowToUpdate['Ngày sửa'] = dateStr; }
+                    if (rowToUpdate) { 
+                        rowToUpdate['Check'] = isChecked ? 'TRUE' : 'FALSE'; 
+                        rowToUpdate['Ngày sửa'] = dateStr; 
+                    }
                     populateDoctorFilter();
                     applyFilter();
                 } else {
-                    alert('Lỗi lưu: ' + result.message); checkboxElement.checked = !isChecked;
+                    alert('Lỗi lưu: ' + result.message); 
+                    checkboxElement.checked = !isChecked;
                 }
             })
             .catch(() => {
-                checkboxElement.disabled = false; trElement.classList.remove('saving');
-                alert('Mất kết nối!'); checkboxElement.checked = !isChecked;
+                checkboxElement.disabled = false; 
+                trElement.classList.remove('saving');
+                alert('Mất kết nối!'); 
+                checkboxElement.checked = !isChecked;
             });
     }
 
