@@ -6,144 +6,85 @@
     <title>Công cụ Lọc Mã LK Google Sheets</title>
     <style>
         * { box-sizing: border-box; }
-        body { 
-            font-family: Arial, sans-serif; 
-            margin: 0; 
-            padding: 15px; 
-            background-color: #f0f8ff; 
-            width: 100vw; 
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 15px;
+            background-color: #f0f8ff;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
-        .container { 
-            background: white; 
-            padding: 20px; 
-            border-radius: 8px; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
-            display: flex; 
-            flex-direction: column; 
-            flex: 1; 
-            overflow: hidden; 
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
             position: relative;
         }
-
         h2 { color: #333; margin-top: 0; flex-shrink: 0; }
-
-        .controls { 
-            background-color: #e9ecef; 
-            padding: 15px; 
-            border-radius: 5px; 
-            margin-bottom: 15px; 
-            border: 1px solid #ddd; 
-            display: flex; 
-            flex-wrap: wrap; 
-            gap: 15px; 
-            justify-content: center; 
-            align-items: center; 
-            flex-shrink: 0; 
+        .controls {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
         }
-        select, button { 
-            padding: 8px 12px; 
-            font-size: 15px; 
-            border-radius: 4px; 
-            border: 1px solid #ccc; 
+        select, button {
+            padding: 8px 12px;
+            font-size: 15px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
         }
-        button { 
-            background-color: #4CAF50; 
-            color: white; 
-            border: none; 
-            cursor: pointer; 
-            font-weight: bold; 
-            padding: 10px 20px; 
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            padding: 10px 20px;
         }
         button:hover:not(:disabled) { background-color: #45a049; }
         button:disabled { background-color: #ccc; cursor: not-allowed; }
-
         .filter-group { border-left: 2px solid #ccc; padding-left: 15px; }
-
-        #message { 
-            font-weight: bold; 
-            margin-bottom: 5px; 
-            font-size: 15px; 
-            flex-shrink: 0; 
-            text-align: center; 
+        #message {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 15px;
+            flex-shrink: 0;
+            text-align: center;
         }
 
-        /* Dump Truck Loader */
+        /* Loader */
         .loader-overlay {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(255, 255, 255, 0.92);
             display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            border-radius: 8px;
-            flex-direction: column;
-            gap: 20px;
+            align-items: center; justify-content: center;
+            z-index: 100; border-radius: 8px;
+            flex-direction: column; gap: 20px;
         }
-        .truck-container {
-            position: relative;
-            width: 220px;
-            height: 100px;
-        }
-        .truck {
-            position: absolute;
-            left: -50px;
-            animation: drive 2.8s linear infinite;
-        }
-        .truck-body {
-            width: 140px;
-            height: 50px;
-            background: #2196F3;
-            border-radius: 8px 8px 0 0;
-            position: relative;
-        }
-        .truck-cab {
-            width: 50px;
-            height: 35px;
-            background: #1976D2;
-            position: absolute;
-            left: 90px;
-            top: 10px;
-            border-radius: 6px;
-        }
-        .dump-bed {
-            width: 90px;
-            height: 28px;
-            background: #1565C0;
-            position: absolute;
-            left: 5px;
-            top: 22px;
-            border-radius: 4px;
-            animation: dump 2.8s linear infinite;
-            transform-origin: right center;
-        }
-        .wheel {
-            width: 28px;
-            height: 28px;
-            background: #333;
-            border-radius: 50%;
-            position: absolute;
-            bottom: -14px;
-            border: 4px solid #fff;
-            box-shadow: 0 0 0 6px #2196F3;
-            animation: wheel-spin 0.6s linear infinite;
-        }
+        .truck-container { position: relative; width: 220px; height: 100px; }
+        .truck { position: absolute; left: -50px; animation: drive 2.8s linear infinite; }
+        .truck-body { width: 140px; height: 50px; background: #2196F3; border-radius: 8px 8px 0 0; position: relative; }
+        .truck-cab { width: 50px; height: 35px; background: #1976D2; position: absolute; left: 90px; top: 10px; border-radius: 6px; }
+        .dump-bed { width: 90px; height: 28px; background: #1565C0; position: absolute; left: 5px; top: 22px; border-radius: 4px; animation: dump 2.8s linear infinite; transform-origin: right center; }
+        .wheel { width: 28px; height: 28px; background: #333; border-radius: 50%; position: absolute; bottom: -14px; border: 4px solid #fff; box-shadow: 0 0 0 6px #2196F3; animation: wheel-spin 0.6s linear infinite; }
         .wheel.front { left: 25px; }
         .wheel.rear { left: 85px; }
-
-        .load {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: #FF9800;
-            border-radius: 50%;
-            opacity: 0;
-            animation: falling 2.8s linear infinite;
-        }
+        .load { position: absolute; width: 8px; height: 8px; background: #FF9800; border-radius: 50%; opacity: 0; animation: falling 2.8s linear infinite; }
 
         @keyframes drive { 0% { left: -50px; } 100% { left: 280px; } }
         @keyframes dump { 0%,60% { transform: rotate(0deg); } 70%,85% { transform: rotate(-35deg); } 100% { transform: rotate(0deg); } }
@@ -154,71 +95,32 @@
             80% { transform: translateY(60px); }
             100% { opacity: 0; transform: translateY(80px); }
         }
+        .loader-text { font-size: 17px; color: #333; font-weight: bold; }
 
-        .loader-text {
-            font-size: 17px;
-            color: #333;
-            font-weight: bold;
-        }
+        .copyable { cursor: pointer; position: relative; }
+        .copyable:hover { background-color: #e3f2fd !important; color: #1976D2; }
 
-        /* Copy mã bệnh */
-        .copyable {
-            cursor: pointer;
-            position: relative;
-        }
-        .copyable:hover {
-            background-color: #e3f2fd !important;
-            color: #1976D2;
-        }
         .copy-toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #4CAF50;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: bold;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            z-index: 1000;
-            display: none;
-            align-items: center;
-            gap: 8px;
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #4CAF50; color: white; padding: 12px 24px; border-radius: 8px;
+            font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1000; display: none; align-items: center; gap: 8px;
         }
 
-        .loading { color: #ff9900; } 
-        .error { color: red; } 
+        .loading { color: #ff9900; }
+        .error { color: red; }
         .success { color: green; }
 
-        .table-wrapper { 
-            flex: 1; 
-            overflow: auto; 
-            border: 1px solid #ddd; 
-            border-radius: 4px; 
-            background-color: #fff; 
-        }
+        .table-wrapper { flex: 1; overflow: auto; border: 1px solid #ddd; border-radius: 4px; background-color: #fff; }
         table { width: 100%; border-collapse: collapse; }
-        th, td { 
-            border: 1px solid #ddd; 
-            padding: 10px; 
-            text-align: left; 
-            white-space: nowrap; 
-        }
-        th { 
-            background-color: #2196F3; 
-            color: white; 
-            position: sticky; 
-            top: 0; 
-            z-index: 2; 
-        }
-        tr:nth-child(even) { background-color: #f9f9f9; } 
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; white-space: nowrap; }
+        th { background-color: #2196F3; color: white; position: sticky; top: 0; z-index: 2; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
         tr:hover { background-color: #f1f1f1; }
         .check-column { text-align: center; width: 60px; min-width: 60px; }
         input[type="checkbox"] { transform: scale(1.5); cursor: pointer; }
         .saving { background-color: #ffe4b5 !important; }
 
-        /* Bảng thống kê modal */
         #modalStatsTable { width: 100%; border-collapse: collapse; font-size: 15px; }
         #modalStatsTable th, #modalStatsTable td { border: 1px solid #2196F3; padding: 10px; text-align: left; }
         #modalStatsTable th { background: #2196F3; color: white; }
@@ -226,33 +128,12 @@
         #modalStatsTable tr.total { background: #f8d7da; font-weight: bold; color: #d32f2f; }
 
         .footer {
-            text-align: center;
-            margin: 20px auto 0;
-            padding-top: 15px;
-            color: #666;
-            font-size: 13px;
-            border-top: 1px solid #ddd;
-            flex-shrink: 0;
-            max-width: 80%;
-            align-self: center;
+            text-align: center; margin: 20px auto 0; padding-top: 15px;
+            color: #666; font-size: 13px; border-top: 1px solid #ddd;
+            flex-shrink: 0; max-width: 80%; align-self: center;
         }
-        .modal { 
-            display: none; 
-            position: fixed; 
-            z-index: 1000; 
-            left: 0; top: 0; 
-            width: 100%; height: 100%; 
-            background-color: rgba(0,0,0,0.6); 
-        }
-        .modal-content { 
-            background-color: #fff; 
-            margin: 5% auto; 
-            padding: 20px; 
-            border-radius: 12px; 
-            width: 90%; 
-            max-width: 700px; 
-            box-shadow: 0 8px 30px rgba(0,0,0,0.3); 
-        }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); }
+        .modal-content { background-color: #fff; margin: 5% auto; padding: 20px; border-radius: 12px; width: 90%; max-width: 700px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
         .close { color: #aaa; float: right; font-size: 32px; font-weight: bold; cursor: pointer; }
         .close:hover { color: #f00; }
     </style>
@@ -270,7 +151,7 @@
         </div>
         <div class="filter-group">
             <label for="statusFilter"><strong>2. Lọc trạng thái: </strong></label>
-            <select id="statusFilter" onchange="applyFilter()" disabled>
+            <select id="statusFilter" onchange="onStatusChange()" disabled>
                 <option value="all">Hiển thị Tất cả</option>
                 <option value="unchecked" selected>Chỉ hiện Chưa check ❌</option>
                 <option value="checked">Chỉ hiện Đã check ✅</option>
@@ -292,7 +173,7 @@
         <span style="color:#1976D2; font-size:14px;">Click vào ô <strong>Mã bệnh</strong> để tự động copy</span>
     </div>
 
-    <!-- Dump Truck Loader -->
+    <!-- Loader -->
     <div id="loader" class="loader-overlay">
         <div class="truck-container">
             <div class="truck">
@@ -322,7 +203,6 @@
     </div>
 </div>
 
-<!-- MODAL THỐNG KÊ -->
 <div id="statsModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="hideStatsModal()">&times;</span>
@@ -334,10 +214,7 @@
     </div>
 </div>
 
-<!-- Toast thông báo copy -->
-<div id="copyToast" class="copy-toast">
-    ✅ Đã copy mã bệnh!
-</div>
+<div id="copyToast" class="copy-toast">✅ Đã copy mã bệnh!</div>
 
 <script>
     const API_URL = 'https://script.google.com/macros/s/AKfycbwzbnt1rpcXDBqovIyBmwuabtBncF6-fY9loH8WdsoJ54fUyJ0D__zMucAbskj62avu/exec';
@@ -359,26 +236,31 @@
         loaderText.innerText = text;
         loader.style.display = 'flex';
     }
-
     function hideLoader() {
         loader.style.display = 'none';
     }
-
     function showCopyToast() {
         copyToast.style.display = 'flex';
-        setTimeout(() => {
-            copyToast.style.display = 'none';
-        }, 2000);
+        setTimeout(() => copyToast.style.display = 'none', 1800);
     }
 
-    // Hàm copy text vào clipboard
     function copyToClipboard(text) {
         if (!text) return;
-        navigator.clipboard.writeText(text.trim()).then(() => {
-            showCopyToast();
-        }).catch(() => {
-            alert('Không thể copy: ' + text);
-        });
+        const str = String(text).trim();
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(str).then(showCopyToast).catch(() => fallbackCopy(str));
+        } else {
+            fallbackCopy(str);
+        }
+    }
+    function fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = 0;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showCopyToast();
     }
 
     window.onload = function () {
@@ -387,25 +269,21 @@
         fetch(API_URL + '?action=getSheets').then(r => r.json()).then(result => {
             if (result.status === 'success') {
                 sheetSelect.innerHTML = '';
-                result.sheets.forEach(s => { 
-                    let o = document.createElement('option'); 
-                    o.value = s; 
-                    o.text = s; 
-                    sheetSelect.appendChild(o); 
+                result.sheets.forEach(s => {
+                    let o = document.createElement('option');
+                    o.value = s; o.text = s;
+                    sheetSelect.appendChild(o);
                 });
-                sheetSelect.disabled = false; 
+                sheetSelect.disabled = false;
                 btnFilter.disabled = false;
-                msgDiv.innerText = 'Đã tải xong! Vui lòng bấm "Tải Dữ Liệu".'; 
+                msgDiv.innerText = 'Đã tải xong! Vui lòng bấm "Tải Dữ Liệu".';
                 msgDiv.className = 'success';
             }
-        }).catch(() => { 
-            msgDiv.innerText = 'Lỗi kết nối API.'; 
-            msgDiv.className = 'error'; 
-        });
+        }).catch(() => { msgDiv.innerText = 'Lỗi kết nối API.'; msgDiv.className = 'error'; });
     };
 
     function resetAutoRefresh() {
-        doctorFilter.innerHTML = '<option value="all">Tất cả Bác sĩ</option>'; 
+        doctorFilter.innerHTML = '<option value="all">Tất cả Bác sĩ</option>';
         doctorFilter.disabled = true;
         statusFilter.disabled = true;
     }
@@ -422,25 +300,31 @@
         return null;
     }
 
+    // Cập nhật danh sách bác sĩ theo trạng thái
     function populateDoctorFilter() {
         doctorColumnName = detectDoctorColumn(globalData);
-        const doctors = new Set();
         if (!doctorColumnName) return;
+
+        const doctors = new Set();
+        const statusType = statusFilter.value;
+
         globalData.forEach(row => {
             const isChecked = (row['Check'] === 'TRUE' || row['Check'] === true || row['Check'] === 'true');
-            if (!isChecked) {
-                let docStr = String(row[doctorColumnName] || '').trim();
-                if (docStr) {
-                    const splitDocs = docStr.split(/[,;\/]/).map(d => d.trim()).filter(Boolean);
-                    splitDocs.forEach(d => doctors.add(d));
-                }
+
+            if (statusType === 'unchecked' && isChecked) return;
+            if (statusType === 'checked' && !isChecked) return;
+
+            let docStr = String(row[doctorColumnName] || '').trim();
+            if (docStr) {
+                const splitDocs = docStr.split(/[,;\/]/).map(d => d.trim()).filter(Boolean);
+                splitDocs.forEach(d => doctors.add(d));
             }
         });
+
         doctorFilter.innerHTML = '<option value="all">Tất cả Bác sĩ</option>';
         Array.from(doctors).sort().forEach(d => {
-            let o = document.createElement('option'); 
-            o.value = d; 
-            o.textContent = d; 
+            let o = document.createElement('option');
+            o.value = d; o.textContent = d;
             doctorFilter.appendChild(o);
         });
         doctorFilter.disabled = false;
@@ -448,13 +332,17 @@
 
     function isCodeColumn(header) {
         const lower = header.toLowerCase().trim();
-        return lower.includes('mã bệnh') || 
-               lower.includes('mã bn') || 
-               lower.includes('mabenh') || 
-               lower.includes('mabn') ||
-               lower === 'mã' ||
-               lower.includes('code');
+        return lower.includes('mã bệnh') || lower.includes('mã bn') ||
+               lower.includes('mabenh') || lower.includes('mabn') ||
+               lower === 'mã' || lower.includes('code');
     }
+
+    // ====================== THÊM MỚI: Tự động render khi đổi trạng thái ======================
+    function onStatusChange() {
+        populateDoctorFilter();   // Cập nhật danh sách bác sĩ
+        applyFilter();            // Render lại bảng dữ liệu ngay lập tức
+    }
+    // ====================================================================================
 
     function updateModalStatistics() {
         const tbody = document.getElementById('modalStatsBody');
@@ -489,7 +377,6 @@
         updateModalStatistics();
         document.getElementById('statsModal').style.display = 'block';
     }
-
     function hideStatsModal() {
         document.getElementById('statsModal').style.display = 'none';
     }
@@ -507,7 +394,6 @@
         if (!currentSelectedSheet) return;
 
         showLoader(isAuto ? "Đang làm mới dữ liệu..." : "Đang tải dữ liệu từ Google Sheets...");
-
         btnFilter.disabled = true;
         btnRefresh.disabled = true;
 
@@ -528,26 +414,23 @@
                     if (globalData.length > 0) {
                         statusFilter.disabled = false;
                         populateDoctorFilter();
-                        if (!isAuto) { 
-                            statusFilter.value = 'unchecked'; 
-                            doctorFilter.value = 'all'; 
+                        if (!isAuto) {
+                            statusFilter.value = 'unchecked';
+                            doctorFilter.value = 'all';
                         }
                         applyFilter();
                     } else {
-                        msgDiv.innerText = 'Trang không có dữ liệu.'; 
+                        msgDiv.innerText = 'Trang không có dữ liệu.';
                         msgDiv.className = 'error';
                     }
-                } else {
-                    msgDiv.innerText = 'Lỗi khi lấy dữ liệu từ server.'; 
-                    msgDiv.className = 'error';
                 }
             })
-            .catch(() => { 
+            .catch(() => {
                 hideLoader();
                 btnFilter.disabled = false;
                 btnRefresh.disabled = false;
-                msgDiv.innerText = 'Lỗi kết nối! Vui lòng kiểm tra mạng.'; 
-                msgDiv.className = 'error'; 
+                msgDiv.innerText = 'Lỗi kết nối!';
+                msgDiv.className = 'error';
             });
     }
 
@@ -557,9 +440,10 @@
 
         const filteredData = globalData.filter(row => {
             const isChecked = (row['Check'] === 'TRUE' || row['Check'] === true || row['Check'] === 'true');
-            if (statusType === 'checked' && !isChecked) return false;
+
             if (statusType === 'unchecked' && isChecked) return false;
-            
+            if (statusType === 'checked' && !isChecked) return false;
+
             if (selectedDoctor !== 'all' && doctorColumnName) {
                 let docStr = String(row[doctorColumnName] || '').trim();
                 const doctorsInRow = docStr.split(/[,;\/]/).map(d => d.trim()).filter(Boolean);
@@ -569,10 +453,10 @@
         });
 
         const now = new Date();
-        const timeString = now.getHours().toString().padStart(2,'0') + ':' + 
-                          now.getMinutes().toString().padStart(2,'0') + ':' + 
+        const timeString = now.getHours().toString().padStart(2,'0') + ':' +
+                          now.getMinutes().toString().padStart(2,'0') + ':' +
                           now.getSeconds().toString().padStart(2,'0');
-        
+
         msgDiv.innerHTML = `Đang hiển thị ${filteredData.length} / ${globalData.length} kết quả (Cập nhật lúc: ${timeString}).`;
         msgDiv.className = 'success';
 
@@ -590,9 +474,7 @@
 
         let headerRow = '<tr>';
         headers.forEach(h => {
-            headerRow += h === 'Check' ? 
-                `<th class="check-column">Trạng thái</th>` : 
-                `<th>${h}</th>`;
+            headerRow += h === 'Check' ? `<th class="check-column">Trạng thái</th>` : `<th>${h}</th>`;
         });
         headerRow += '</tr>';
         thead.innerHTML = headerRow;
@@ -623,41 +505,36 @@
         let trElement = document.getElementById(`row-${rowIndex}`);
         trElement.classList.add('saving');
         let isChecked = checkboxElement.checked;
-        let dateStr = '';
-        if (isChecked) {
-            let now = new Date();
-            dateStr = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
-        }
+        let dateStr = isChecked ? new Date().toLocaleDateString('vi-VN') : '';
 
         fetch(`${API_URL}?action=updateCheck&sheetName=${encodeURIComponent(sheetName)}&rowIndex=${rowIndex}&isChecked=${isChecked}`)
             .then(r => r.json())
             .then(result => {
-                checkboxElement.disabled = false; 
+                checkboxElement.disabled = false;
                 trElement.classList.remove('saving');
                 if (result.status === 'success') {
                     let rowToUpdate = globalData.find(r => r['_rowIndex'] === rowIndex);
-                    if (rowToUpdate) { 
-                        rowToUpdate['Check'] = isChecked ? 'TRUE' : 'FALSE'; 
-                        rowToUpdate['Ngày sửa'] = dateStr; 
+                    if (rowToUpdate) {
+                        rowToUpdate['Check'] = isChecked ? 'TRUE' : 'FALSE';
+                        rowToUpdate['Ngày sửa'] = dateStr;
                     }
                     populateDoctorFilter();
                     applyFilter();
                 } else {
-                    alert('Lỗi lưu: ' + result.message); 
+                    alert('Lỗi lưu: ' + result.message);
                     checkboxElement.checked = !isChecked;
                 }
             })
             .catch(() => {
-                checkboxElement.disabled = false; 
+                checkboxElement.disabled = false;
                 trElement.classList.remove('saving');
-                alert('Mất kết nối!'); 
+                alert('Mất kết nối!');
                 checkboxElement.checked = !isChecked;
             });
     }
 
     window.onclick = function(event) {
-        const modal = document.getElementById('statsModal');
-        if (event.target === modal) hideStatsModal();
+        if (event.target.id === 'statsModal') hideStatsModal();
     };
 </script>
 </body>
