@@ -253,6 +253,22 @@
             color: #1976D2;
         }
 
+        /* --- Row Done Effect --- */
+        tr.row-done td {
+            background-color: #f5f5f5 !important;
+            color: #9e9e9e !important;
+            text-decoration: line-through;
+            pointer-events: none; /* Disable clicking inside the row */
+        }
+        tr.row-done td input[type="checkbox"] {
+            pointer-events: auto; /* Exception: Still allow unchecking if needed */
+            filter: grayscale(1);
+        }
+        tr.row-done:hover td.col-fixed-1,
+        tr.row-done:hover td.col-fixed-2 {
+            background-color: #f5f5f5 !important;
+        }
+
         .copy-toast {
             position: fixed;
             bottom: 20px;
@@ -521,6 +537,399 @@
         .close:hover {
             color: #f00;
         }
+
+        /* Password Modal */
+        .pw-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pw-modal-overlay.show {
+            display: flex;
+        }
+
+        .pw-modal {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            text-align: center;
+            min-width: 300px;
+            max-width: 90%;
+        }
+
+        .pw-modal h3 {
+            margin: 0 0 6px;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .pw-modal p {
+            margin: 0 0 16px;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .pw-modal input[type="password"] {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            margin-bottom: 16px;
+            text-align: center;
+            letter-spacing: 4px;
+        }
+
+        .pw-modal input[type="password"]:focus {
+            border-color: #2196F3;
+        }
+
+        .pw-modal .pw-error {
+            color: #d32f2f;
+            font-size: 13px;
+            margin-bottom: 12px;
+            display: none;
+        }
+
+        .pw-modal .pw-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .pw-modal .pw-btns button {
+            padding: 8px 24px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .pw-modal .btn-confirm {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .pw-modal .btn-cancel {
+            background: #eee;
+            color: #333;
+        }
+
+        @media (max-width: 480px) {
+            .pw-modal {
+                min-width: unset;
+                width: 90%;
+                padding: 18px;
+            }
+        }
+
+        .update-toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 24px 36px;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 600;
+            text-align: center;
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .update-toast.show {
+            display: flex;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .update-toast-icon {
+            font-size: 40px;
+        }
+
+        .update-toast-msg {
+            line-height: 1.5;
+        }
+
+        @media (max-width: 480px) {
+            .update-toast {
+                padding: 18px 24px;
+                font-size: 14px;
+                width: 85%;
+                border-radius: 12px;
+            }
+
+            .update-toast-icon {
+                font-size: 32px;
+            }
+        }
+
+        /* =================== RESPONSIVE =================== */
+
+        /* Tablet & small laptop */
+        @media (max-width: 1024px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .controls {
+                gap: 10px;
+                padding: 12px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+        }
+
+        /* Tablet portrait */
+        @media (max-width: 768px) {
+            body {
+                padding: 8px;
+            }
+
+            .container {
+                padding: 10px;
+                border-radius: 6px;
+            }
+
+            h2 {
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+                padding: 10px;
+            }
+
+            .controls > div,
+            .controls > .filter-group {
+                border-left: none;
+                padding-left: 0;
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .controls label {
+                font-size: 13px;
+            }
+
+            select, button {
+                font-size: 14px;
+                padding: 7px 10px;
+                flex: 1;
+                min-width: 120px;
+            }
+
+            .filter-group {
+                border-left: none !important;
+                padding-left: 0 !important;
+                border-top: 1px solid #ddd;
+                padding-top: 8px;
+            }
+
+            th, td {
+                padding: 8px 6px;
+                font-size: 13px;
+            }
+
+            .khoa-badge {
+                font-size: 12px;
+                padding: 3px 10px;
+            }
+
+            .khoa-badge .count {
+                min-width: 20px;
+                height: 20px;
+                font-size: 11px;
+            }
+
+            #message {
+                font-size: 13px;
+            }
+
+            .modal-content {
+                margin: 3% auto;
+                padding: 15px;
+                width: 95%;
+            }
+
+            .footer {
+                max-width: 100%;
+                font-size: 11px;
+                margin-top: 10px;
+                padding-top: 10px;
+            }
+
+            .col-fixed-2 {
+                box-shadow: 4px 0 10px -3px rgba(0, 0, 0, 0.2);
+            }
+
+            tr .col-fixed-2 {
+                border-right-width: 2px;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
+
+            .container {
+                padding: 8px;
+                border-radius: 4px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            h2 {
+                font-size: 14px;
+                margin-bottom: 8px;
+            }
+
+            .controls {
+                padding: 8px;
+                gap: 6px;
+            }
+
+            .controls label {
+                font-size: 12px;
+                display: block;
+                margin-bottom: 2px;
+            }
+
+            select, button {
+                font-size: 13px;
+                padding: 6px 8px;
+                width: 100%;
+                min-width: unset;
+            }
+
+            button {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+
+            th, td {
+                padding: 6px 5px;
+                font-size: 12px;
+            }
+
+            input[type="checkbox"] {
+                transform: scale(1.2);
+            }
+
+            .check-column {
+                width: 45px;
+                min-width: 45px;
+            }
+
+            .khoa-stats {
+                gap: 5px;
+                padding: 5px 0;
+            }
+
+            .khoa-badge {
+                font-size: 11px;
+                padding: 2px 8px;
+            }
+
+            .khoa-badge .count {
+                min-width: 18px;
+                height: 18px;
+                font-size: 10px;
+            }
+
+            .loader-text {
+                font-size: 14px;
+            }
+
+            .truck-container {
+                width: 160px;
+                height: 70px;
+                transform: scale(0.75);
+            }
+
+            .modal-content {
+                margin: 2% auto;
+                padding: 12px;
+                width: 98%;
+                border-radius: 8px;
+            }
+
+            .modal-content h3 {
+                font-size: 15px;
+            }
+
+            #modalStatsTable {
+                font-size: 13px;
+            }
+
+            #modalStatsTable th,
+            #modalStatsTable td {
+                padding: 7px 5px;
+            }
+
+            .copy-toast {
+                padding: 8px 16px;
+                font-size: 13px;
+                bottom: 10px;
+            }
+
+            .footer {
+                font-size: 10px;
+                margin-top: 8px;
+                padding-top: 8px;
+            }
+
+            .col-fixed-1,
+            .col-fixed-2 {
+                font-size: 11px;
+                position: static;
+                background: transparent;
+                font-weight: normal;
+                color: inherit;
+                box-shadow: none;
+            }
+
+            th.col-fixed-1,
+            th.col-fixed-2 {
+                position: sticky;
+                top: 0;
+                left: auto;
+                background: #2196F3;
+                z-index: 2;
+            }
+
+            tr .col-fixed-2 {
+                border-right: 1px solid #ddd;
+            }
+        }
     </style>
 </head>
 
@@ -614,8 +1023,29 @@
 
     <div id="copyToast" class="copy-toast">✅ Đã copy mã bệnh!</div>
 
+    <div id="updateToast" class="update-toast">
+        <div class="update-toast-icon">✅</div>
+        <div class="update-toast-msg">Cập nhật xong nhớ báo cho IT để thay thế</div>
+    </div>
+
+    <div id="pwOverlay" class="pw-modal-overlay">
+        <div class="pw-modal">
+            <h3>🔐 Xác nhận quyền</h3>
+            <p>Nhập mật khẩu để đánh dấu Done</p>
+            <input type="password" id="pwInput" placeholder="Nhập mật khẩu...">
+            <div class="pw-error" id="pwError">Sai mật khẩu!</div>
+            <div class="pw-btns">
+                <button class="btn-cancel" onclick="cancelPwModal()">Hủy</button>
+                <button class="btn-confirm" onclick="confirmPwModal()">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbwzbnt1rpcXDBqovIyBmwuabtBncF6-fY9loH8WdsoJ54fUyJ0D__zMucAbskj62avu/exec';
+        const DONE_PASSWORD = 'nttong';
+        let pendingDone = null; // { sheetName, rowIndex, checkbox, isChecked }
+
+        const API_URL = 'https://script.google.com/macros/s/AKfycby8uSuxw7eOHOcvNMPN70tk15PTm7zWqZJ901UeI0Sr-hh66Ql6E_U63Emr8fZ7xdnW/exec';
         let globalData = [];
         let currentSelectedSheet = '';
         let doctorColumnName = null;
@@ -643,6 +1073,11 @@
         function showCopyToast() {
             copyToast.style.display = 'flex';
             setTimeout(() => copyToast.style.display = 'none', 1800);
+        }
+        function showUpdateToast() {
+            const toast = document.getElementById('updateToast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
         }
 
         function copyToClipboard(text) {
@@ -792,6 +1227,11 @@
             return lower.includes('mã bệnh') || lower.includes('mã bn') ||
                 lower.includes('mabenh') || lower.includes('mabn') ||
                 lower === 'mã' || lower.includes('code');
+        }
+
+        function isDoneColumn(header) {
+            const lower = header.toLowerCase().trim();
+            return lower === 'done' || lower === 'hoàn tất';
         }
 
         // ====================== THÊM MỚI: Tự động render khi đổi trạng thái ======================
@@ -992,6 +1432,7 @@
                 if (isMaLK(h)) cls = ' class="col-fixed-1"';
                 else if (isHoTen(h)) cls = ' class="col-fixed-2"';
                 else if (h === 'Check') cls = ' class="check-column"';
+                else if (isDoneColumn(h)) cls = ' class="check-column"';
                 const label = h === 'Check' ? 'Trạng thái' : h;
                 headerRow += `<th${cls}>${label}</th>`;
             });
@@ -1001,7 +1442,20 @@
             let bodyRows = '';
             filteredData.forEach(row => {
                 const rowIndex = row['_rowIndex'];
-                bodyRows += `<tr id="row-${rowIndex}">`;
+                
+                // Check if this row is done
+                let isRowDone = false;
+                headers.forEach(h => {
+                    if (isDoneColumn(h)) {
+                        const cellValue = row[h];
+                        if (cellValue === 'TRUE' || cellValue === true || cellValue === 'true') {
+                            isRowDone = true;
+                        }
+                    }
+                });
+                
+                const trClass = isRowDone ? 'row-done' : '';
+                bodyRows += `<tr id="row-${rowIndex}" class="${trClass}">`;
                 headers.forEach((h, i) => {
                     const cellValue = row[h] !== undefined ? row[h] : '';
                     let fixedCls = '';
@@ -1011,6 +1465,9 @@
                     if (h === 'Check') {
                         const checked = (row[h] === 'TRUE' || row[h] === true) ? 'checked' : '';
                         bodyRows += `<td class="check-column"><input type="checkbox" ${checked} onchange="updateCheckStatus('${currentSelectedSheet}', ${rowIndex}, this)"></td>`;
+                    } else if (isDoneColumn(h)) {
+                        const doneChecked = (cellValue === 'TRUE' || cellValue === true || cellValue === 'true') ? 'checked' : '';
+                        bodyRows += `<td class="check-column"><input type="checkbox" ${doneChecked} onchange="handleDoneClick('${currentSelectedSheet}', ${rowIndex}, this)"></td>`;
                     } else if (isCodeColumn(h)) {
                         bodyRows += `<td class="copyable${fixedCls}" onclick="copyToClipboard('${String(cellValue).replace(/'/g, "\\'")}')">${cellValue}</td>`;
                     } else {
@@ -1052,6 +1509,7 @@
                         }
                         populateDoctorFilter();
                         applyFilter();
+                        showUpdateToast();
                     } else {
                         alert('Lỗi lưu: ' + result.message);
                         checkboxElement.checked = !isChecked;
@@ -1067,7 +1525,84 @@
 
         window.onclick = function (event) {
             if (event.target.id === 'statsModal') hideStatsModal();
+            if (event.target.id === 'pwOverlay') cancelPwModal();
         };
+
+        // ========== Done column with password ==========
+        function handleDoneClick(sheetName, rowIndex, checkbox) {
+            checkbox.checked = !checkbox.checked; // revert first
+            pendingDone = { sheetName, rowIndex, checkbox, isChecked: !checkbox.checked };
+            document.getElementById('pwInput').value = '';
+            document.getElementById('pwError').style.display = 'none';
+            document.getElementById('pwOverlay').classList.add('show');
+            setTimeout(() => document.getElementById('pwInput').focus(), 100);
+        }
+
+        function cancelPwModal() {
+            document.getElementById('pwOverlay').classList.remove('show');
+            pendingDone = null;
+        }
+
+        function confirmPwModal() {
+            const pw = document.getElementById('pwInput').value;
+            if (pw !== DONE_PASSWORD) {
+                document.getElementById('pwError').style.display = 'block';
+                document.getElementById('pwInput').value = '';
+                document.getElementById('pwInput').focus();
+                return;
+            }
+            document.getElementById('pwOverlay').classList.remove('show');
+            if (pendingDone) {
+                const { sheetName, rowIndex, checkbox, isChecked } = pendingDone;
+                checkbox.checked = isChecked;
+                updateDoneStatus(sheetName, rowIndex, checkbox, isChecked);
+                pendingDone = null;
+            }
+        }
+
+        // Enter key to confirm
+        document.getElementById('pwInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') confirmPwModal();
+            if (e.key === 'Escape') cancelPwModal();
+        });
+
+        function updateDoneStatus(sheetName, rowIndex, checkboxElement, isChecked) {
+            checkboxElement.disabled = true;
+            let trElement = document.getElementById(`row-${rowIndex}`);
+            trElement.classList.add('saving');
+
+            fetch(`${API_URL}?action=updateDone&sheetName=${encodeURIComponent(sheetName)}&rowIndex=${rowIndex}&isChecked=${isChecked}`)
+                .then(r => r.json())
+                .then(result => {
+                    checkboxElement.disabled = false;
+                    trElement.classList.remove('saving');
+                    if (result.status === 'success') {
+                        let rowToUpdate = globalData.find(r => r['_rowIndex'] === rowIndex);
+                        if (rowToUpdate) {
+                            // Find Done column name
+                            const doneCol = Object.keys(rowToUpdate).find(k => isDoneColumn(k));
+                            if (doneCol) rowToUpdate[doneCol] = isChecked ? 'TRUE' : 'FALSE';
+                        }
+                        
+                        if (isChecked) {
+                            trElement.classList.add('row-done');
+                        } else {
+                            trElement.classList.remove('row-done');
+                        }
+
+                        showUpdateToast();
+                    } else {
+                        alert('Lỗi lưu Done: ' + result.message);
+                        checkboxElement.checked = !isChecked;
+                    }
+                })
+                .catch(() => {
+                    checkboxElement.disabled = false;
+                    trElement.classList.remove('saving');
+                    alert('Mất kết nối!');
+                    checkboxElement.checked = !isChecked;
+                });
+        }
     </script>
 </body>
 
