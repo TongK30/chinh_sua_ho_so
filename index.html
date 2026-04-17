@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Công cụ Lọc Mã LK Google Sheets</title>
+    <title>Chỉnh sửa chẩn đoán còn sai sót</title>
     <style>
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -17,18 +21,27 @@
             flex-direction: column;
             overflow: hidden;
         }
+
         .container {
             background: white;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
             flex: 1;
             overflow: hidden;
             position: relative;
         }
-        h2 { color: #333; margin-top: 0; flex-shrink: 0; }
+
+        h2 {
+            color: #333;
+            margin-top: 0;
+            flex-shrink: 0;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
         .controls {
             background-color: #e9ecef;
             padding: 15px;
@@ -42,12 +55,15 @@
             align-items: center;
             flex-shrink: 0;
         }
-        select, button {
+
+        select,
+        button {
             padding: 8px 12px;
             font-size: 15px;
             border-radius: 4px;
             border: 1px solid #ccc;
         }
+
         button {
             background-color: #4CAF50;
             color: white;
@@ -56,9 +72,21 @@
             font-weight: bold;
             padding: 10px 20px;
         }
-        button:hover:not(:disabled) { background-color: #45a049; }
-        button:disabled { background-color: #ccc; cursor: not-allowed; }
-        .filter-group { border-left: 2px solid #ccc; padding-left: 15px; }
+
+        button:hover:not(:disabled) {
+            background-color: #45a049;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .filter-group {
+            border-left: 2px solid #ccc;
+            padding-left: 15px;
+        }
+
         #message {
             font-weight: bold;
             margin-bottom: 5px;
@@ -69,473 +97,978 @@
 
         /* Loader */
         .loader-overlay {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: rgba(255, 255, 255, 0.92);
             display: none;
-            align-items: center; justify-content: center;
-            z-index: 100; border-radius: 8px;
-            flex-direction: column; gap: 20px;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            border-radius: 8px;
+            flex-direction: column;
+            gap: 20px;
         }
-        .truck-container { position: relative; width: 220px; height: 100px; }
-        .truck { position: absolute; left: -50px; animation: drive 2.8s linear infinite; }
-        .truck-body { width: 140px; height: 50px; background: #2196F3; border-radius: 8px 8px 0 0; position: relative; }
-        .truck-cab { width: 50px; height: 35px; background: #1976D2; position: absolute; left: 90px; top: 10px; border-radius: 6px; }
-        .dump-bed { width: 90px; height: 28px; background: #1565C0; position: absolute; left: 5px; top: 22px; border-radius: 4px; animation: dump 2.8s linear infinite; transform-origin: right center; }
-        .wheel { width: 28px; height: 28px; background: #333; border-radius: 50%; position: absolute; bottom: -14px; border: 4px solid #fff; box-shadow: 0 0 0 6px #2196F3; animation: wheel-spin 0.6s linear infinite; }
-        .wheel.front { left: 25px; }
-        .wheel.rear { left: 85px; }
-        .load { position: absolute; width: 8px; height: 8px; background: #FF9800; border-radius: 50%; opacity: 0; animation: falling 2.8s linear infinite; }
 
-        @keyframes drive { 0% { left: -50px; } 100% { left: 280px; } }
-        @keyframes dump { 0%,60% { transform: rotate(0deg); } 70%,85% { transform: rotate(-35deg); } 100% { transform: rotate(0deg); } }
-        @keyframes wheel-spin { to { transform: rotate(360deg); } }
-        @keyframes falling { 
-            0% { opacity: 0; transform: translateY(-10px); }
-            65% { opacity: 1; }
-            80% { transform: translateY(60px); }
-            100% { opacity: 0; transform: translateY(80px); }
+        .truck-container {
+            position: relative;
+            width: 220px;
+            height: 100px;
         }
-        .loader-text { font-size: 17px; color: #333; font-weight: bold; }
 
-        .copyable { cursor: pointer; position: relative; }
-        .copyable:hover { background-color: #e3f2fd !important; color: #1976D2; }
+        .truck {
+            position: absolute;
+            left: -50px;
+            animation: drive 2.8s linear infinite;
+        }
+
+        .truck-body {
+            width: 140px;
+            height: 50px;
+            background: #2196F3;
+            border-radius: 8px 8px 0 0;
+            position: relative;
+        }
+
+        .truck-cab {
+            width: 50px;
+            height: 35px;
+            background: #1976D2;
+            position: absolute;
+            left: 90px;
+            top: 10px;
+            border-radius: 6px;
+        }
+
+        .dump-bed {
+            width: 90px;
+            height: 28px;
+            background: #1565C0;
+            position: absolute;
+            left: 5px;
+            top: 22px;
+            border-radius: 4px;
+            animation: dump 2.8s linear infinite;
+            transform-origin: right center;
+        }
+
+        .wheel {
+            width: 28px;
+            height: 28px;
+            background: #333;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -14px;
+            border: 4px solid #fff;
+            box-shadow: 0 0 0 6px #2196F3;
+            animation: wheel-spin 0.6s linear infinite;
+        }
+
+        .wheel.front {
+            left: 25px;
+        }
+
+        .wheel.rear {
+            left: 85px;
+        }
+
+        .load {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #FF9800;
+            border-radius: 50%;
+            opacity: 0;
+            animation: falling 2.8s linear infinite;
+        }
+
+        @keyframes drive {
+            0% {
+                left: -50px;
+            }
+
+            100% {
+                left: 280px;
+            }
+        }
+
+        @keyframes dump {
+
+            0%,
+            60% {
+                transform: rotate(0deg);
+            }
+
+            70%,
+            85% {
+                transform: rotate(-35deg);
+            }
+
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+
+        @keyframes wheel-spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes falling {
+            0% {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            65% {
+                opacity: 1;
+            }
+
+            80% {
+                transform: translateY(60px);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(80px);
+            }
+        }
+
+        .loader-text {
+            font-size: 17px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .copyable {
+            cursor: pointer;
+            position: relative;
+        }
+
+        .copyable:hover {
+            background-color: #e3f2fd !important;
+            color: #1976D2;
+        }
 
         .copy-toast {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: #4CAF50; color: white; padding: 12px 24px; border-radius: 8px;
-            font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            z-index: 1000; display: none; align-items: center; gap: 8px;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            gap: 8px;
         }
 
-        .loading { color: #ff9900; }
-        .error { color: red; }
-        .success { color: green; }
+        .loading {
+            color: #ff9900;
+        }
 
-        .table-wrapper { flex: 1; overflow: auto; border: 1px solid #ddd; border-radius: 4px; background-color: #fff; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; white-space: nowrap; }
-        th { background-color: #2196F3; color: white; position: sticky; top: 0; z-index: 2; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        tr:hover { background-color: #f1f1f1; }
-        .check-column { text-align: center; width: 60px; min-width: 60px; }
-        input[type="checkbox"] { transform: scale(1.5); cursor: pointer; }
-        .saving { background-color: #ffe4b5 !important; }
+        .error {
+            color: red;
+        }
 
-        #modalStatsTable { width: 100%; border-collapse: collapse; font-size: 15px; }
-        #modalStatsTable th, #modalStatsTable td { border: 1px solid #2196F3; padding: 10px; text-align: left; }
-        #modalStatsTable th { background: #2196F3; color: white; }
-        #modalStatsTable th:last-child { text-align: right; }
-        #modalStatsTable tr.total { background: #f8d7da; font-weight: bold; color: #d32f2f; }
+        .success {
+            color: green;
+        }
+
+        .table-wrapper {
+            flex: 1;
+            overflow: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        th {
+            background-color: #2196F3;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        .col-fixed-1,
+        .col-fixed-2 {
+            position: sticky;
+            z-index: 1;
+            background: #e8f0fe;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .col-fixed-1 {
+            left: 0;
+        }
+
+        .col-fixed-2 {
+            left: var(--col1-width, 100px);
+            box-shadow: 6px 0 16px -4px rgba(0, 0, 0, 0.2);
+        }
+
+        th.col-fixed-1 {
+            z-index: 3;
+            background: #1565C0;
+            color: white;
+            font-weight: bold;
+        }
+
+        th.col-fixed-2 {
+            z-index: 3;
+            background: #1565C0;
+            color: white;
+            font-weight: bold;
+            box-shadow: 6px 0 16px -4px rgba(0, 0, 0, 0.3);
+        }
+
+        tr:nth-child(even) td.col-fixed-1,
+        tr:nth-child(even) td.col-fixed-2 {
+            background: #dce7f7;
+        }
+
+        tr:hover td.col-fixed-1,
+        tr:hover td.col-fixed-2 {
+            background: #bbdefb;
+        }
+
+        tr .col-fixed-2 {
+            border-right: 3px solid #1565C0;
+        }
+
+        .khoa-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            padding: 8px 0;
+            flex-shrink: 0;
+        }
+
+        .khoa-stats:empty {
+            display: none;
+        }
+
+        .khoa-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            background: #fff3e0;
+            color: #e65100;
+            border: 1px solid #ffcc80;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .khoa-badge:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .khoa-badge.active {
+            background: #e65100;
+            color: white;
+            border-color: #e65100;
+        }
+
+        .khoa-badge.active .count {
+            background: white;
+            color: #e65100;
+        }
+
+        .khoa-badge .count {
+            background: #e65100;
+            color: white;
+            border-radius: 50%;
+            min-width: 22px;
+            height: 22px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .khoa-badge.done {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-color: #a5d6a7;
+        }
+
+        .khoa-badge.done .count {
+            background: #2e7d32;
+        }
+
+
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .check-column {
+            text-align: center;
+            width: 60px;
+            min-width: 60px;
+        }
+
+        input[type="checkbox"] {
+            transform: scale(1.5);
+            cursor: pointer;
+        }
+
+        .saving {
+            background-color: #ffe4b5 !important;
+        }
+
+        #modalStatsTable {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        #modalStatsTable th,
+        #modalStatsTable td {
+            border: 1px solid #2196F3;
+            padding: 10px;
+            text-align: left;
+        }
+
+        #modalStatsTable th {
+            background: #2196F3;
+            color: white;
+        }
+
+        #modalStatsTable th:last-child {
+            text-align: right;
+        }
+
+        #modalStatsTable tr.total {
+            background: #f8d7da;
+            font-weight: bold;
+            color: #d32f2f;
+        }
 
         .footer {
-            text-align: center; margin: 20px auto 0; padding-top: 15px;
-            color: #666; font-size: 13px; border-top: 1px solid #ddd;
-            flex-shrink: 0; max-width: 80%; align-self: center;
+            text-align: center;
+            margin: 20px auto 0;
+            padding-top: 15px;
+            color: #666;
+            font-size: 13px;
+            border-top: 1px solid #ddd;
+            flex-shrink: 0;
+            max-width: 80%;
+            align-self: center;
         }
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); }
-        .modal-content { background-color: #fff; margin: 5% auto; padding: 20px; border-radius: 12px; width: 90%; max-width: 700px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
-        .close { color: #aaa; float: right; font-size: 32px; font-weight: bold; cursor: pointer; }
-        .close:hover { color: #f00; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 700px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #f00;
+        }
     </style>
 </head>
+
 <body>
-<div class="container">
-    <h2>Chỉnh sửa chẩn đoán khoa Nội</h2>
-    <div class="controls">
-        <div>
-            <label for="sheetSelect"><strong>1. Chọn tháng: </strong></label>
-            <select id="sheetSelect" disabled onchange="resetAutoRefresh()">
-                <option value="">Đang tải...</option>
-            </select>
-            <button id="btnFilter" onclick="fetchData(false)" disabled>Tải Dữ Liệu</button>
-        </div>
-        <div class="filter-group">
-            <label for="statusFilter"><strong>2. Lọc trạng thái: </strong></label>
-            <select id="statusFilter" onchange="onStatusChange()" disabled>
-                <option value="all">Hiển thị Tất cả</option>
-                <option value="unchecked" selected>Chỉ hiện Chưa check ❌</option>
-                <option value="checked">Chỉ hiện Đã check ✅</option>
-            </select>
-        </div>
-        <div class="filter-group">
-            <label for="doctorFilter"><strong>3. Lọc theo Bác sĩ: </strong></label>
-            <select id="doctorFilter" onchange="applyFilter()" disabled>
-                <option value="all">Tất cả Bác sĩ</option>
-            </select>
-        </div>
-        <button onclick="showStatsModal()" style="background:#2196F3;">📊 Xem Thống Kê</button>
-        <button onclick="manualRefresh()" style="background:#FF9800;" id="btnRefresh">🔄 Làm mới dữ liệu</button>
-    </div>
-
-    <div id="message"></div>
-    <div style="text-align:center;color:red;margin-top:10px">
-        SAU KHI KẾT THÚC BỆNH ÁN NHỚ <strong>TICK VÀO Ô TRẠNG THÁI ✔️</strong><br>
-        <span style="color:#1976D2; font-size:14px;">Click vào ô <strong>Mã bệnh</strong> để tự động copy</span>
-    </div>
-
-    <!-- Loader -->
-    <div id="loader" class="loader-overlay">
-        <div class="truck-container">
-            <div class="truck">
-                <div class="truck-body">
-                    <div class="dump-bed"></div>
-                    <div class="truck-cab"></div>
-                </div>
-                <div class="wheel front"></div>
-                <div class="wheel rear"></div>
+    <div class="container">
+        <h2>Chỉnh sửa chẩn đoán còn sai sót</h2>
+        <div class="controls">
+            <div>
+                <label for="sheetSelect"><strong>1. Chọn tháng: </strong></label>
+                <select id="sheetSelect" disabled onchange="resetAutoRefresh()">
+                    <option value="">Đang tải...</option>
+                </select>
+                <button id="btnFilter" onclick="fetchData(false)" disabled>Tải Dữ Liệu</button>
             </div>
-            <div class="load" style="left: 80px; animation-delay: 0.2s;"></div>
-            <div class="load" style="left: 95px; animation-delay: 0.5s;"></div>
-            <div class="load" style="left: 110px; animation-delay: 0.8s;"></div>
+            <div class="filter-group">
+                <label for="statusFilter"><strong>2. Lọc trạng thái: </strong></label>
+                <select id="statusFilter" onchange="onStatusChange()" disabled>
+                    <option value="all">Hiển thị Tất cả</option>
+                    <option value="unchecked" selected>Chỉ hiện Chưa check ❌</option>
+                    <option value="checked">Chỉ hiện Đã check ✅</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="khoaFilter"><strong>3. Lọc theo Khoa: </strong></label>
+                <select id="khoaFilter" onchange="onKhoaChange()" disabled>
+                    <option value="all">Tất cả Khoa</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="doctorFilter"><strong>4. Lọc theo Bác sĩ: </strong></label>
+                <select id="doctorFilter" onchange="applyFilter()" disabled>
+                    <option value="all">Tất cả Bác sĩ</option>
+                </select>
+            </div>
+            <button onclick="showStatsModal()" style="background:#2196F3;">📊 Xem Thống Kê</button>
+            <button onclick="manualRefresh()" style="background:#FF9800;" id="btnRefresh">🔄 Làm mới dữ liệu</button>
         </div>
-        <div id="loader-text" class="loader-text">Đang tải dữ liệu từ Google Sheets...</div>
+
+        <div id="message"></div>
+        <div id="khoaStats" class="khoa-stats"></div>
+        <div style="text-align:center;color:red;margin-top:10px">
+            SAU KHI KẾT THÚC BỆNH ÁN NHỚ <strong>TICK VÀO Ô TRẠNG THÁI ✔️</strong><br>
+            <span style="color:#1976D2; font-size:14px;">Click vào ô <strong>Mã bệnh</strong> để tự động copy</span>
+        </div>
+
+        <!-- Loader -->
+        <div id="loader" class="loader-overlay">
+            <div class="truck-container">
+                <div class="truck">
+                    <div class="truck-body">
+                        <div class="dump-bed"></div>
+                        <div class="truck-cab"></div>
+                    </div>
+                    <div class="wheel front"></div>
+                    <div class="wheel rear"></div>
+                </div>
+                <div class="load" style="left: 80px; animation-delay: 0.2s;"></div>
+                <div class="load" style="left: 95px; animation-delay: 0.5s;"></div>
+                <div class="load" style="left: 110px; animation-delay: 0.8s;"></div>
+            </div>
+            <div id="loader-text" class="loader-text">Đang tải dữ liệu từ Google Sheets...</div>
+        </div>
+
+        <div class="table-wrapper">
+            <table id="dataTable" style="display: none;">
+                <thead id="tableHead"></thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            &copy; 2026 - Công cụ được phát triển bởi <strong>Thanh Tòng</strong>.<br>Phòng KHNV
+        </div>
     </div>
 
-    <div class="table-wrapper">
-        <table id="dataTable" style="display: none;">
-            <thead id="tableHead"></thead>
-            <tbody id="tableBody"></tbody>
-        </table>
+    <div id="statsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="hideStatsModal()">&times;</span>
+            <h3>📊 Thống kê bệnh án CHƯA SỬA theo Bác sĩ</h3>
+            <table id="modalStatsTable">
+                <thead>
+                    <tr>
+                        <th>Bác sĩ</th>
+                        <th style="text-align:right">Chưa sửa</th>
+                    </tr>
+                </thead>
+                <tbody id="modalStatsBody"></tbody>
+            </table>
+        </div>
     </div>
 
-    <div class="footer">
-        &copy; 2026 - Công cụ được phát triển bởi <strong>Thanh Tòng</strong>.<br>Phòng KHNV
-    </div>
-</div>
+    <div id="copyToast" class="copy-toast">✅ Đã copy mã bệnh!</div>
 
-<div id="statsModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="hideStatsModal()">&times;</span>
-        <h3>📊 Thống kê bệnh án CHƯA SỬA theo Bác sĩ</h3>
-        <table id="modalStatsTable">
-            <thead><tr><th>Bác sĩ</th><th style="text-align:right">Chưa sửa</th></tr></thead>
-            <tbody id="modalStatsBody"></tbody>
-        </table>
-    </div>
-</div>
+    <script>
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwzbnt1rpcXDBqovIyBmwuabtBncF6-fY9loH8WdsoJ54fUyJ0D__zMucAbskj62avu/exec';
+        let globalData = [];
+        let currentSelectedSheet = '';
+        let doctorColumnName = null;
+        let khoaColumnName = null;
 
-<div id="copyToast" class="copy-toast">✅ Đã copy mã bệnh!</div>
+        const khoaFilterEl = document.getElementById('khoaFilter');
 
-<script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbwzbnt1rpcXDBqovIyBmwuabtBncF6-fY9loH8WdsoJ54fUyJ0D__zMucAbskj62avu/exec';
-    let globalData = [];
-    let currentSelectedSheet = '';
-    let doctorColumnName = null;
+        const sheetSelect = document.getElementById('sheetSelect');
+        const statusFilter = document.getElementById('statusFilter');
+        const doctorFilter = document.getElementById('doctorFilter');
+        const btnFilter = document.getElementById('btnFilter');
+        const btnRefresh = document.getElementById('btnRefresh');
+        const msgDiv = document.getElementById('message');
+        const loader = document.getElementById('loader');
+        const loaderText = document.getElementById('loader-text');
+        const copyToast = document.getElementById('copyToast');
 
-    const sheetSelect = document.getElementById('sheetSelect');
-    const statusFilter = document.getElementById('statusFilter');
-    const doctorFilter = document.getElementById('doctorFilter');
-    const btnFilter = document.getElementById('btnFilter');
-    const btnRefresh = document.getElementById('btnRefresh');
-    const msgDiv = document.getElementById('message');
-    const loader = document.getElementById('loader');
-    const loaderText = document.getElementById('loader-text');
-    const copyToast = document.getElementById('copyToast');
-
-    function showLoader(text = "Đang tải dữ liệu...") {
-        loaderText.innerText = text;
-        loader.style.display = 'flex';
-    }
-    function hideLoader() {
-        loader.style.display = 'none';
-    }
-    function showCopyToast() {
-        copyToast.style.display = 'flex';
-        setTimeout(() => copyToast.style.display = 'none', 1800);
-    }
-
-    function copyToClipboard(text) {
-        if (!text) return;
-        const str = String(text).trim();
-        if (navigator.clipboard) {
-            navigator.clipboard.writeText(str).then(showCopyToast).catch(() => fallbackCopy(str));
-        } else {
-            fallbackCopy(str);
+        function showLoader(text = "Đang tải dữ liệu...") {
+            loaderText.innerText = text;
+            loader.style.display = 'flex';
         }
-    }
-    function fallbackCopy(text) {
-        const ta = document.createElement('textarea');
-        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = 0;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-        showCopyToast();
-    }
-
-    window.onload = function () {
-        msgDiv.className = 'loading';
-        msgDiv.innerText = 'Đang kết nối với Google Sheets...';
-        fetch(API_URL + '?action=getSheets').then(r => r.json()).then(result => {
-            if (result.status === 'success') {
-                sheetSelect.innerHTML = '';
-                result.sheets.forEach(s => {
-                    let o = document.createElement('option');
-                    o.value = s; o.text = s;
-                    sheetSelect.appendChild(o);
-                });
-                sheetSelect.disabled = false;
-                btnFilter.disabled = false;
-                msgDiv.innerText = 'Đã tải xong! Vui lòng bấm "Tải Dữ Liệu".';
-                msgDiv.className = 'success';
-            }
-        }).catch(() => { msgDiv.innerText = 'Lỗi kết nối API.'; msgDiv.className = 'error'; });
-    };
-
-    function resetAutoRefresh() {
-        doctorFilter.innerHTML = '<option value="all">Tất cả Bác sĩ</option>';
-        doctorFilter.disabled = true;
-        statusFilter.disabled = true;
-    }
-
-    function detectDoctorColumn(data) {
-        if (!data || data.length === 0) return null;
-        const headers = Object.keys(data[0]);
-        if (headers.includes('Tên Bác Sỹ (Lỗi)')) return 'Tên Bác Sỹ (Lỗi)';
-        const keywords = ['bác sĩ','bác sỹ','bs','doctor','tên bs','phụ trách','điều trị','chủ trị'];
-        for (let h of headers) {
-            const lower = h.toLowerCase().trim();
-            if (keywords.some(k => lower.includes(k))) return h;
+        function hideLoader() {
+            loader.style.display = 'none';
         }
-        return null;
-    }
+        function showCopyToast() {
+            copyToast.style.display = 'flex';
+            setTimeout(() => copyToast.style.display = 'none', 1800);
+        }
 
-    // Cập nhật danh sách bác sĩ theo trạng thái
-    function populateDoctorFilter() {
-        doctorColumnName = detectDoctorColumn(globalData);
-        if (!doctorColumnName) return;
-
-        const doctors = new Set();
-        const statusType = statusFilter.value;
-
-        globalData.forEach(row => {
-            const isChecked = (row['Check'] === 'TRUE' || row['Check'] === true || row['Check'] === 'true');
-
-            if (statusType === 'unchecked' && isChecked) return;
-            if (statusType === 'checked' && !isChecked) return;
-
-            let docStr = String(row[doctorColumnName] || '').trim();
-            if (docStr) {
-                const splitDocs = docStr.split(/[,;\/]/).map(d => d.trim()).filter(Boolean);
-                splitDocs.forEach(d => doctors.add(d));
+        function copyToClipboard(text) {
+            if (!text) return;
+            const str = String(text).trim();
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(str).then(showCopyToast).catch(() => fallbackCopy(str));
+            } else {
+                fallbackCopy(str);
             }
-        });
+        }
+        function fallbackCopy(text) {
+            const ta = document.createElement('textarea');
+            ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = 0;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            showCopyToast();
+        }
 
-        doctorFilter.innerHTML = '<option value="all">Tất cả Bác sĩ</option>';
-        Array.from(doctors).sort().forEach(d => {
-            let o = document.createElement('option');
-            o.value = d; o.textContent = d;
-            doctorFilter.appendChild(o);
-        });
-        doctorFilter.disabled = false;
-    }
+        window.onload = function () {
+            msgDiv.className = 'loading';
+            msgDiv.innerText = 'Đang kết nối với Google Sheets...';
+            fetch(API_URL + '?action=getSheets').then(r => r.json()).then(result => {
+                if (result.status === 'success') {
+                    sheetSelect.innerHTML = '';
+                    result.sheets.forEach(s => {
+                        let o = document.createElement('option');
+                        o.value = s; o.text = s;
+                        sheetSelect.appendChild(o);
+                    });
+                    sheetSelect.disabled = false;
+                    btnFilter.disabled = false;
+                    msgDiv.innerText = 'Đã tải xong! Vui lòng bấm "Tải Dữ Liệu".';
+                    msgDiv.className = 'success';
+                }
+            }).catch(() => { msgDiv.innerText = 'Lỗi kết nối API.'; msgDiv.className = 'error'; });
+        };
 
-    function isCodeColumn(header) {
-        const lower = header.toLowerCase().trim();
-        return lower.includes('mã bệnh') || lower.includes('mã bn') ||
-               lower.includes('mabenh') || lower.includes('mabn') ||
-               lower === 'mã' || lower.includes('code');
-    }
+        function resetAutoRefresh() {
+            doctorFilter.innerHTML = '<option value="all">Tất cả Bác sĩ</option>';
+            doctorFilter.disabled = true;
+            khoaFilterEl.innerHTML = '<option value="all">Tất cả Khoa</option>';
+            khoaFilterEl.disabled = true;
+            statusFilter.disabled = true;
+        }
 
-    // ====================== THÊM MỚI: Tự động render khi đổi trạng thái ======================
-    function onStatusChange() {
-        populateDoctorFilter();   // Cập nhật danh sách bác sĩ
-        applyFilter();            // Render lại bảng dữ liệu ngay lập tức
-    }
-    // ====================================================================================
+        function detectDoctorColumn(data) {
+            if (!data || data.length === 0) return null;
+            const headers = Object.keys(data[0]);
+            if (headers.includes('Tên Bác Sỹ (Lỗi)')) return 'Tên Bác Sỹ (Lỗi)';
+            const keywords = ['bác sĩ', 'bác sỹ', 'bs', 'doctor', 'tên bs', 'phụ trách', 'điều trị', 'chủ trị'];
+            for (let h of headers) {
+                const lower = h.toLowerCase().trim();
+                if (keywords.some(k => lower.includes(k))) return h;
+            }
+            return null;
+        }
 
-    function updateModalStatistics() {
-        const tbody = document.getElementById('modalStatsBody');
-        if (!globalData.length || !doctorColumnName) return;
-        const unchecked = {};
-        let total = 0;
-        globalData.forEach(row => {
-            const isChecked = (row['Check'] === 'TRUE' || row['Check'] === true || row['Check'] === 'true');
-            if (!isChecked) {
+        function detectKhoaColumn(data) {
+            if (!data || data.length === 0) return null;
+            const headers = Object.keys(data[0]);
+            for (let h of headers) {
+                const lower = h.toLowerCase().trim();
+                if (lower === 'khoa' || lower.includes('khoa')) return h;
+            }
+            return null;
+        }
+
+        function populateKhoaFilter() {
+            khoaColumnName = detectKhoaColumn(globalData);
+            if (!khoaColumnName) return;
+
+            const khoaSet = new Set();
+            const statusType = statusFilter.value;
+
+            globalData.forEach(row => {
+                const isChecked = (row['Check'] === 'TRUE' || row['Check'] === true || row['Check'] === 'true');
+                if (statusType === 'unchecked' && isChecked) return;
+                if (statusType === 'checked' && !isChecked) return;
+
+                let v = String(row[khoaColumnName] || '').trim();
+                if (v) khoaSet.add(v);
+            });
+
+            const prev = khoaFilterEl.value;
+            khoaFilterEl.innerHTML = '<option value="all">Tất cả Khoa</option>';
+            Array.from(khoaSet).sort().forEach(v => {
+                let o = document.createElement('option');
+                o.value = v; o.textContent = v;
+                khoaFilterEl.appendChild(o);
+            });
+            if ([...khoaSet].includes(prev)) khoaFilterEl.value = prev;
+            khoaFilterEl.disabled = false;
+        }
+
+        function onKhoaChange() {
+            populateDoctorFilter();
+            applyFilter();
+        }
+
+        function populateDoctorFilter() {
+            doctorColumnName = detectDoctorColumn(globalData);
+            if (!doctorColumnName) return;
+
+            const doctors = new Set();
+            const statusType = statusFilter.value;
+            const selKhoa = khoaFilterEl.value;
+
+            globalData.forEach(row => {
+                const isChecked = (row['Check'] === 'TRUE' || row['Check'] === true || row['Check'] === 'true');
+
+                if (statusType === 'unchecked' && isChecked) return;
+                if (statusType === 'checked' && !isChecked) return;
+
+                // Lọc theo Khoa đang chọn
+                if (selKhoa !== 'all' && khoaColumnName) {
+                    let khoaStr = String(row[khoaColumnName] || '').trim();
+                    if (khoaStr !== selKhoa) return;
+                }
+
                 let docStr = String(row[doctorColumnName] || '').trim();
                 if (docStr) {
-                    const doctors = docStr.split(/[,;\/]/).map(d => d.trim()).filter(Boolean);
-                    doctors.forEach(doc => {
-                        unchecked[doc] = (unchecked[doc] || 0) + 1;
-                        total++;
-                    });
+                    const splitDocs = docStr.split(/[,;\/]/).map(d => d.trim()).filter(Boolean);
+                    splitDocs.forEach(d => doctors.add(d));
                 }
+            });
+
+            const prev = doctorFilter.value;
+            doctorFilter.innerHTML = '<option value="all">Tất cả Bác sĩ</option>';
+            Array.from(doctors).sort().forEach(d => {
+                let o = document.createElement('option');
+                o.value = d; o.textContent = d;
+                doctorFilter.appendChild(o);
+            });
+            if ([...doctors].includes(prev)) {
+                doctorFilter.value = prev;
+            } else {
+                doctorFilter.value = 'all';
             }
-        });
-        const sortedDoctors = Object.entries(unchecked).filter(([_, c]) => c > 0).sort((a,b) => b[1] - a[1]);
-        if (sortedDoctors.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="2" style="text-align:center;color:green;font-weight:bold;padding:30px;">✅ Tất cả bệnh án đã được sửa xong!</td></tr>`;
-            return;
-        }
-        let rows = '';
-        sortedDoctors.forEach(([name, count]) => rows += `<tr><td>${name}</td><td style="text-align:right;font-weight:bold">${count}</td></tr>`);
-        rows += `<tr class="total"><td>TỔNG CỘNG</td><td style="text-align:right">${total}</td></tr>`;
-        tbody.innerHTML = rows;
-    }
-
-    function showStatsModal() {
-        updateModalStatistics();
-        document.getElementById('statsModal').style.display = 'block';
-    }
-    function hideStatsModal() {
-        document.getElementById('statsModal').style.display = 'none';
-    }
-
-    function manualRefresh() {
-        if (!currentSelectedSheet) {
-            alert('Vui lòng chọn tháng và bấm "Tải Dữ Liệu" trước!');
-            return;
-        }
-        fetchData(false);
-    }
-
-    function fetchData(isAuto = false) {
-        currentSelectedSheet = sheetSelect.value;
-        if (!currentSelectedSheet) return;
-
-        showLoader(isAuto ? "Đang làm mới dữ liệu..." : "Đang tải dữ liệu từ Google Sheets...");
-        btnFilter.disabled = true;
-        btnRefresh.disabled = true;
-
-        if (!isAuto) {
-            msgDiv.className = 'loading';
-            msgDiv.innerText = `Đang lấy dữ liệu từ "${currentSelectedSheet}"...`;
+            doctorFilter.disabled = false;
         }
 
-        fetch(`${API_URL}?sheetName=${encodeURIComponent(currentSelectedSheet)}`)
-            .then(r => r.json())
-            .then(result => {
-                hideLoader();
-                btnFilter.disabled = false;
-                btnRefresh.disabled = false;
+        function isCodeColumn(header) {
+            const lower = header.toLowerCase().trim();
+            return lower.includes('mã bệnh') || lower.includes('mã bn') ||
+                lower.includes('mabenh') || lower.includes('mabn') ||
+                lower === 'mã' || lower.includes('code');
+        }
 
-                if (result.status === 'success') {
-                    globalData = result.data || [];
-                    if (globalData.length > 0) {
-                        statusFilter.disabled = false;
-                        populateDoctorFilter();
-                        if (!isAuto) {
-                            statusFilter.value = 'unchecked';
-                            doctorFilter.value = 'all';
+        // ====================== THÊM MỚI: Tự động render khi đổi trạng thái ======================
+        function onStatusChange() {
+            populateDoctorFilter();   // Cập nhật danh sách bác sĩ
+            populateKhoaFilter();     // Cập nhật danh sách khoa
+            applyFilter();            // Render lại bảng dữ liệu ngay lập tức
+        }
+        // ====================================================================================
+
+        function updateKhoaStats() {
+            const container = document.getElementById('khoaStats');
+            if (!globalData.length || !khoaColumnName) {
+                container.innerHTML = '';
+                return;
+            }
+            const counts = {};
+            globalData.forEach(row => {
+                const isChecked = (row['Check'] === 'TRUE' || row['Check'] === true || row['Check'] === 'true');
+                if (!isChecked) {
+                    let k = String(row[khoaColumnName] || '').trim();
+                    if (k) counts[k] = (counts[k] || 0) + 1;
+                }
+            });
+            const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+            if (sorted.length === 0) {
+                container.innerHTML = '<span style="color:green;font-weight:bold;">✅ Tất cả khoa đã sửa xong!</span>';
+                return;
+            }
+            const currentKhoa = khoaFilterEl.value;
+            container.innerHTML = sorted.map(([name, count]) => {
+                const isActive = currentKhoa === name ? ' active' : '';
+                return `<span class="khoa-badge${isActive}" onclick="filterByKhoa('${name.replace(/'/g, "\\'")}')"><span>${name}</span><span class="count">${count}</span></span>`;
+            }).join('');
+        }
+
+        function filterByKhoa(khoaName) {
+            if (khoaFilterEl.value === khoaName) {
+                khoaFilterEl.value = 'all';
+            } else {
+                khoaFilterEl.value = khoaName;
+            }
+            onKhoaChange();
+        }
+
+        function updateModalStatistics() {
+            const tbody = document.getElementById('modalStatsBody');
+            if (!globalData.length || !doctorColumnName) return;
+            const unchecked = {};
+            let total = 0;
+            globalData.forEach(row => {
+                const isChecked = (row['Check'] === 'TRUE' || row['Check'] === true || row['Check'] === 'true');
+                if (!isChecked) {
+                    let docStr = String(row[doctorColumnName] || '').trim();
+                    if (docStr) {
+                        const doctors = docStr.split(/[,;\/]/).map(d => d.trim()).filter(Boolean);
+                        doctors.forEach(doc => {
+                            unchecked[doc] = (unchecked[doc] || 0) + 1;
+                            total++;
+                        });
+                    }
+                }
+            });
+            const sortedDoctors = Object.entries(unchecked).filter(([_, c]) => c > 0).sort((a, b) => b[1] - a[1]);
+            if (sortedDoctors.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="2" style="text-align:center;color:green;font-weight:bold;padding:30px;">✅ Tất cả bệnh án đã được sửa xong!</td></tr>`;
+                return;
+            }
+            let rows = '';
+            sortedDoctors.forEach(([name, count]) => rows += `<tr><td>${name}</td><td style="text-align:right;font-weight:bold">${count}</td></tr>`);
+            rows += `<tr class="total"><td>TỔNG CỘNG</td><td style="text-align:right">${total}</td></tr>`;
+            tbody.innerHTML = rows;
+        }
+
+        function showStatsModal() {
+            updateModalStatistics();
+            document.getElementById('statsModal').style.display = 'block';
+        }
+        function hideStatsModal() {
+            document.getElementById('statsModal').style.display = 'none';
+        }
+
+        function manualRefresh() {
+            if (!currentSelectedSheet) {
+                alert('Vui lòng chọn tháng và bấm "Tải Dữ Liệu" trước!');
+                return;
+            }
+            fetchData(false);
+        }
+
+        function fetchData(isAuto = false) {
+            currentSelectedSheet = sheetSelect.value;
+            if (!currentSelectedSheet) return;
+
+            showLoader(isAuto ? "Đang làm mới dữ liệu..." : "Đang tải dữ liệu từ Google Sheets...");
+            btnFilter.disabled = true;
+            btnRefresh.disabled = true;
+
+            if (!isAuto) {
+                msgDiv.className = 'loading';
+                msgDiv.innerText = `Đang lấy dữ liệu từ "${currentSelectedSheet}"...`;
+            }
+
+            fetch(`${API_URL}?sheetName=${encodeURIComponent(currentSelectedSheet)}`)
+                .then(r => r.json())
+                .then(result => {
+                    hideLoader();
+                    btnFilter.disabled = false;
+                    btnRefresh.disabled = false;
+
+                    if (result.status === 'success') {
+                        globalData = result.data || [];
+                        if (globalData.length > 0) {
+                            statusFilter.disabled = false;
+                            populateDoctorFilter();
+                            populateKhoaFilter();
+                            if (!isAuto) {
+                                statusFilter.value = 'unchecked';
+                                doctorFilter.value = 'all';
+                                khoaFilterEl.value = 'all';
+                            }
+                            applyFilter();
+                        } else {
+                            msgDiv.innerText = 'Trang không có dữ liệu.';
+                            msgDiv.className = 'error';
                         }
+                    }
+                })
+                .catch(() => {
+                    hideLoader();
+                    btnFilter.disabled = false;
+                    btnRefresh.disabled = false;
+                    msgDiv.innerText = 'Lỗi kết nối!';
+                    msgDiv.className = 'error';
+                });
+        }
+
+        function applyFilter() {
+            const statusType = statusFilter.value;
+            const selectedDoctor = doctorFilter.value;
+
+            const selectedKhoa = khoaFilterEl.value;
+
+            const filteredData = globalData.filter(row => {
+                const isChecked = (row['Check'] === 'TRUE' || row['Check'] === true || row['Check'] === 'true');
+
+                if (statusType === 'unchecked' && isChecked) return false;
+                if (statusType === 'checked' && !isChecked) return false;
+
+                if (selectedDoctor !== 'all' && doctorColumnName) {
+                    let docStr = String(row[doctorColumnName] || '').trim();
+                    const doctorsInRow = docStr.split(/[,;\/]/).map(d => d.trim()).filter(Boolean);
+                    if (!doctorsInRow.includes(selectedDoctor)) return false;
+                }
+
+                if (selectedKhoa !== 'all' && khoaColumnName) {
+                    let khoaStr = String(row[khoaColumnName] || '').trim();
+                    if (khoaStr !== selectedKhoa) return false;
+                }
+                return true;
+            });
+
+            const now = new Date();
+            const timeString = now.getHours().toString().padStart(2, '0') + ':' +
+                now.getMinutes().toString().padStart(2, '0') + ':' +
+                now.getSeconds().toString().padStart(2, '0');
+
+            msgDiv.innerHTML = `Đang hiển thị ${filteredData.length} / ${globalData.length} kết quả (Cập nhật lúc: ${timeString}).`;
+            msgDiv.className = 'success';
+
+            updateKhoaStats();
+
+            const thead = document.getElementById('tableHead');
+            const tbody = document.getElementById('tableBody');
+
+            if (filteredData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="100%" style="text-align:center;padding:30px;">Không có dữ liệu khớp bộ lọc.</td></tr>';
+                document.getElementById('dataTable').style.display = 'table';
+                return;
+            }
+
+            let headers = Object.keys(globalData[0]).filter(h => h !== '_rowIndex');
+            if (!headers.includes('Check')) headers.unshift('Check');
+
+            // Detect sticky columns by name
+            function isMaLK(h) {
+                const l = h.toLowerCase().trim();
+                return l.includes('mã lk') || l.includes('malk') || l.includes('mã lượt khám');
+            }
+            function isHoTen(h) {
+                const l = h.toLowerCase().trim();
+                return l.includes('họ tên') || l.includes('hoten') || l.includes('tên bệnh nhân') || l.includes('họ và tên');
+            }
+
+            let headerRow = '<tr>';
+            headers.forEach((h, i) => {
+                let cls = '';
+                if (isMaLK(h)) cls = ' class="col-fixed-1"';
+                else if (isHoTen(h)) cls = ' class="col-fixed-2"';
+                else if (h === 'Check') cls = ' class="check-column"';
+                const label = h === 'Check' ? 'Trạng thái' : h;
+                headerRow += `<th${cls}>${label}</th>`;
+            });
+            headerRow += '</tr>';
+            thead.innerHTML = headerRow;
+
+            let bodyRows = '';
+            filteredData.forEach(row => {
+                const rowIndex = row['_rowIndex'];
+                bodyRows += `<tr id="row-${rowIndex}">`;
+                headers.forEach((h, i) => {
+                    const cellValue = row[h] !== undefined ? row[h] : '';
+                    let fixedCls = '';
+                    if (isMaLK(h)) fixedCls = ' col-fixed-1';
+                    else if (isHoTen(h)) fixedCls = ' col-fixed-2';
+
+                    if (h === 'Check') {
+                        const checked = (row[h] === 'TRUE' || row[h] === true) ? 'checked' : '';
+                        bodyRows += `<td class="check-column"><input type="checkbox" ${checked} onchange="updateCheckStatus('${currentSelectedSheet}', ${rowIndex}, this)"></td>`;
+                    } else if (isCodeColumn(h)) {
+                        bodyRows += `<td class="copyable${fixedCls}" onclick="copyToClipboard('${String(cellValue).replace(/'/g, "\\'")}')">${cellValue}</td>`;
+                    } else {
+                        bodyRows += `<td class="${fixedCls}">${cellValue}</td>`;
+                    }
+                });
+                bodyRows += '</tr>';
+            });
+            tbody.innerHTML = bodyRows;
+            document.getElementById('dataTable').style.display = 'table';
+
+            // Tính width cột 1 cố định để cột 2 căn đúng vị trí
+            setTimeout(() => {
+                const firstFixed = document.querySelector('th.col-fixed-1');
+                if (firstFixed) {
+                    const w = firstFixed.offsetWidth;
+                    document.querySelector('.table-wrapper').style.setProperty('--col1-width', w + 'px');
+                }
+            }, 0);
+        }
+
+        function updateCheckStatus(sheetName, rowIndex, checkboxElement) {
+            checkboxElement.disabled = true;
+            let trElement = document.getElementById(`row-${rowIndex}`);
+            trElement.classList.add('saving');
+            let isChecked = checkboxElement.checked;
+            let dateStr = isChecked ? new Date().toLocaleDateString('vi-VN') : '';
+
+            fetch(`${API_URL}?action=updateCheck&sheetName=${encodeURIComponent(sheetName)}&rowIndex=${rowIndex}&isChecked=${isChecked}`)
+                .then(r => r.json())
+                .then(result => {
+                    checkboxElement.disabled = false;
+                    trElement.classList.remove('saving');
+                    if (result.status === 'success') {
+                        let rowToUpdate = globalData.find(r => r['_rowIndex'] === rowIndex);
+                        if (rowToUpdate) {
+                            rowToUpdate['Check'] = isChecked ? 'TRUE' : 'FALSE';
+                            rowToUpdate['Ngày sửa'] = dateStr;
+                        }
+                        populateDoctorFilter();
                         applyFilter();
                     } else {
-                        msgDiv.innerText = 'Trang không có dữ liệu.';
-                        msgDiv.className = 'error';
+                        alert('Lỗi lưu: ' + result.message);
+                        checkboxElement.checked = !isChecked;
                     }
-                }
-            })
-            .catch(() => {
-                hideLoader();
-                btnFilter.disabled = false;
-                btnRefresh.disabled = false;
-                msgDiv.innerText = 'Lỗi kết nối!';
-                msgDiv.className = 'error';
-            });
-    }
-
-    function applyFilter() {
-        const statusType = statusFilter.value;
-        const selectedDoctor = doctorFilter.value;
-
-        const filteredData = globalData.filter(row => {
-            const isChecked = (row['Check'] === 'TRUE' || row['Check'] === true || row['Check'] === 'true');
-
-            if (statusType === 'unchecked' && isChecked) return false;
-            if (statusType === 'checked' && !isChecked) return false;
-
-            if (selectedDoctor !== 'all' && doctorColumnName) {
-                let docStr = String(row[doctorColumnName] || '').trim();
-                const doctorsInRow = docStr.split(/[,;\/]/).map(d => d.trim()).filter(Boolean);
-                if (!doctorsInRow.includes(selectedDoctor)) return false;
-            }
-            return true;
-        });
-
-        const now = new Date();
-        const timeString = now.getHours().toString().padStart(2,'0') + ':' +
-                          now.getMinutes().toString().padStart(2,'0') + ':' +
-                          now.getSeconds().toString().padStart(2,'0');
-
-        msgDiv.innerHTML = `Đang hiển thị ${filteredData.length} / ${globalData.length} kết quả (Cập nhật lúc: ${timeString}).`;
-        msgDiv.className = 'success';
-
-        const thead = document.getElementById('tableHead');
-        const tbody = document.getElementById('tableBody');
-
-        if (filteredData.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="100%" style="text-align:center;padding:30px;">Không có dữ liệu khớp bộ lọc.</td></tr>';
-            document.getElementById('dataTable').style.display = 'table';
-            return;
+                })
+                .catch(() => {
+                    checkboxElement.disabled = false;
+                    trElement.classList.remove('saving');
+                    alert('Mất kết nối!');
+                    checkboxElement.checked = !isChecked;
+                });
         }
 
-        let headers = Object.keys(globalData[0]).filter(h => h !== '_rowIndex');
-        if (!headers.includes('Check')) headers.unshift('Check');
-
-        let headerRow = '<tr>';
-        headers.forEach(h => {
-            headerRow += h === 'Check' ? `<th class="check-column">Trạng thái</th>` : `<th>${h}</th>`;
-        });
-        headerRow += '</tr>';
-        thead.innerHTML = headerRow;
-
-        let bodyRows = '';
-        filteredData.forEach(row => {
-            const rowIndex = row['_rowIndex'];
-            bodyRows += `<tr id="row-${rowIndex}">`;
-            headers.forEach(h => {
-                const cellValue = row[h] !== undefined ? row[h] : '';
-                if (h === 'Check') {
-                    const checked = (row[h] === 'TRUE' || row[h] === true) ? 'checked' : '';
-                    bodyRows += `<td class="check-column"><input type="checkbox" ${checked} onchange="updateCheckStatus('${currentSelectedSheet}', ${rowIndex}, this)"></td>`;
-                } else if (isCodeColumn(h)) {
-                    bodyRows += `<td class="copyable" onclick="copyToClipboard('${String(cellValue).replace(/'/g, "\\'")}')">${cellValue}</td>`;
-                } else {
-                    bodyRows += `<td>${cellValue}</td>`;
-                }
-            });
-            bodyRows += '</tr>';
-        });
-        tbody.innerHTML = bodyRows;
-        document.getElementById('dataTable').style.display = 'table';
-    }
-
-    function updateCheckStatus(sheetName, rowIndex, checkboxElement) {
-        checkboxElement.disabled = true;
-        let trElement = document.getElementById(`row-${rowIndex}`);
-        trElement.classList.add('saving');
-        let isChecked = checkboxElement.checked;
-        let dateStr = isChecked ? new Date().toLocaleDateString('vi-VN') : '';
-
-        fetch(`${API_URL}?action=updateCheck&sheetName=${encodeURIComponent(sheetName)}&rowIndex=${rowIndex}&isChecked=${isChecked}`)
-            .then(r => r.json())
-            .then(result => {
-                checkboxElement.disabled = false;
-                trElement.classList.remove('saving');
-                if (result.status === 'success') {
-                    let rowToUpdate = globalData.find(r => r['_rowIndex'] === rowIndex);
-                    if (rowToUpdate) {
-                        rowToUpdate['Check'] = isChecked ? 'TRUE' : 'FALSE';
-                        rowToUpdate['Ngày sửa'] = dateStr;
-                    }
-                    populateDoctorFilter();
-                    applyFilter();
-                } else {
-                    alert('Lỗi lưu: ' + result.message);
-                    checkboxElement.checked = !isChecked;
-                }
-            })
-            .catch(() => {
-                checkboxElement.disabled = false;
-                trElement.classList.remove('saving');
-                alert('Mất kết nối!');
-                checkboxElement.checked = !isChecked;
-            });
-    }
-
-    window.onclick = function(event) {
-        if (event.target.id === 'statsModal') hideStatsModal();
-    };
-</script>
+        window.onclick = function (event) {
+            if (event.target.id === 'statsModal') hideStatsModal();
+        };
+    </script>
 </body>
+
 </html>
