@@ -1317,6 +1317,8 @@
             padding: 0.5rem;
             border-radius: 12px;
             /* width: fit-content; */
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .tab-btn {
@@ -1329,6 +1331,8 @@
             padding: 0.75rem 1.5rem;
             border-radius: 8px;
             transition: all 0.3s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .tab-btn:hover {
@@ -1363,6 +1367,7 @@
         .table-wrapper {
             overflow-x: auto;
             max-height: 70vh;
+            flex: 1;
         }
 
         table {
@@ -1792,6 +1797,172 @@
                 border-right: none;
                 border-bottom: 1px solid var(--border-color);
                 position: static;
+            }
+        }
+
+        /* ===== RESPONSIVE FOR PAGE 2 (Ngoại trú) ===== */
+        @media (max-width: 768px) {
+            #page-thongke .navbar {
+                flex-wrap: wrap;
+                padding: 0.75rem 1rem;
+                gap: 8px;
+            }
+
+            #page-thongke .navbar h1 {
+                font-size: 1rem;
+                width: 100%;
+            }
+
+            #page-thongke .navbar select,
+            #page-thongke .navbar button {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.75rem;
+            }
+
+            #page-thongke .tabs {
+                margin: 0.5rem 0.5rem 0 0.5rem;
+                padding: 0.35rem;
+                gap: 0.25rem;
+                border-radius: 8px;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+
+            #page-thongke .tabs::-webkit-scrollbar {
+                display: none;
+            }
+
+            #page-thongke .tab-btn {
+                font-size: 0.78rem;
+                padding: 0.5rem 0.75rem;
+            }
+
+            #page-thongke .card {
+                min-height: 0;
+            }
+
+            #page-thongke .table-section {
+                padding: 0.5rem !important;
+            }
+
+            #page-thongke .table-wrapper {
+                max-height: none;
+                flex: 1;
+                min-height: 0;
+            }
+
+            /* Tab lỗi thường sai thuốc: header + search bar */
+            #tab-thuocsai .table-section > div:first-child {
+                margin-bottom: 6px !important;
+            }
+
+            #tab-thuocsai h2 {
+                font-size: 0.9rem !important;
+            }
+
+            #drugSearchFilter {
+                width: 140px !important;
+                font-size: 0.78rem !important;
+            }
+
+            #drugErrorSummary {
+                font-size: 0.75rem !important;
+            }
+
+            #page-thongke th,
+            #page-thongke td {
+                padding: 6px 8px;
+                font-size: 0.78rem;
+            }
+
+            .drug-modal-container {
+                width: 100vw;
+                height: 100vh;
+                border-radius: 0;
+            }
+
+            .drug-modal-header {
+                padding: 1rem;
+                border-radius: 0;
+            }
+
+            .drug-modal-header h2 {
+                font-size: 1rem;
+            }
+
+            .drug-modal-summary {
+                padding: 0.75rem;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+
+            .drug-summary-card .val {
+                font-size: 1.2rem;
+            }
+
+            .drug-summary-card .label {
+                font-size: 0.7rem;
+            }
+
+            .drug-doctor-list,
+            .drug-error-list {
+                padding: 0.5rem 0.75rem;
+            }
+
+            .drug-doctor-chip,
+            .drug-error-chip {
+                font-size: 0.72rem;
+                padding: 3px 8px;
+            }
+
+            .drug-modal-body td,
+            .drug-modal-body th {
+                padding: 6px 8px;
+                font-size: 0.78rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #page-thongke .tab-btn {
+                font-size: 0.72rem;
+                padding: 0.4rem 0.6rem;
+            }
+
+            #page-thongke th,
+            #page-thongke td {
+                padding: 5px 4px;
+                font-size: 0.72rem;
+            }
+
+            .drug-modal-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* ===== MOBILE: Main navbar responsive ===== */
+        @media (max-width: 600px) {
+            .main-navbar {
+                padding: 0 0.5rem;
+                overflow-x: auto;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+
+            .main-navbar::-webkit-scrollbar {
+                display: none;
+            }
+
+            .main-navbar .app-title {
+                font-size: 0.82rem;
+                padding: 0 0.5rem 0 0;
+                margin-right: 0.5rem;
+            }
+
+            .main-tab-btn {
+                font-size: 0.82rem;
+                padding: 0.75rem 0.8rem;
+                white-space: nowrap;
+                flex-shrink: 0;
             }
         }
     </style>
@@ -2589,7 +2760,7 @@
 
                 <!-- Tab 2: Lỗi thường sai thuốc -->
                 <div id="tab-thuocsai" class="card">
-                    <div class="table-section" style="flex: 1; padding: 1rem;">
+                    <div class="table-section" style="flex: 1; padding: 1rem; overflow: hidden; min-height: 0;">
                         <div
                             style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px; flex-wrap: wrap;">
                             <h2 style="margin: 0; color: var(--primary); font-size: 1.1rem; flex-shrink: 0;">💊 Top
@@ -2600,7 +2771,7 @@
                             <span id="drugErrorSummary" style="font-size: 0.85rem; color: var(--text-muted);"></span>
                         </div>
                         <div class="table-wrapper"
-                            style="border: 1px solid var(--border-color); border-radius: 8px; box-shadow: none; height: 100%;">
+                            style="border: 1px solid var(--border-color); border-radius: 8px; box-shadow: none; flex: 1; min-height: 0; overflow: auto;">
                             <table>
                                 <thead style="position: sticky; top: 0; z-index: 2;">
                                     <tr>
