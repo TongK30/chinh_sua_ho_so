@@ -1,0 +1,3413 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H&#x1EC7; th&#x1ED1;ng Qu&#x1EA3;n l&#xFD; BHXH - Khoa N&#x1ED9;i</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <style>
+        /* ===== SHARED RESET ===== */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ===== TOP NAV TABS ===== */
+        .main-navbar {
+            background: #1565C0;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            padding: 0 1rem;
+            flex: 0 0 auto;
+            z-index: 200;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .main-navbar .app-title {
+            color: white;
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 0 1rem 0 0;
+            margin-right: 1rem;
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+            white-space: nowrap;
+        }
+
+        .main-tab-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .main-tab-btn:hover {
+            color: white;
+        }
+
+        .main-tab-btn.active {
+            color: white;
+            border-bottom-color: #FFD600;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* ===== MAIN PAGES ===== */
+        .main-page {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .main-page.active {
+            display: flex;
+        }
+
+        /* ===== NOI.HTML STYLES ===== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 15px;
+            background-color: #f0f8ff;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        h2 {
+            color: #333;
+            margin-top: 0;
+            flex-shrink: 0;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .controls {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        select,
+        button {
+            padding: 8px 12px;
+            font-size: 15px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            padding: 10px 20px;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: #45a049;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .filter-group {
+            border-left: 2px solid #ccc;
+            padding-left: 15px;
+        }
+
+        #message {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 15px;
+            flex-shrink: 0;
+            text-align: center;
+        }
+
+        /* Loader */
+        .loader-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.92);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            border-radius: 8px;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .truck-container {
+            position: relative;
+            width: 220px;
+            height: 100px;
+        }
+
+        .truck {
+            position: absolute;
+            left: -50px;
+            animation: drive 2.8s linear infinite;
+        }
+
+        .truck-body {
+            width: 140px;
+            height: 50px;
+            background: #2196F3;
+            border-radius: 8px 8px 0 0;
+            position: relative;
+        }
+
+        .truck-cab {
+            width: 50px;
+            height: 35px;
+            background: #1976D2;
+            position: absolute;
+            left: 90px;
+            top: 10px;
+            border-radius: 6px;
+        }
+
+        .dump-bed {
+            width: 90px;
+            height: 28px;
+            background: #1565C0;
+            position: absolute;
+            left: 5px;
+            top: 22px;
+            border-radius: 4px;
+            animation: dump 2.8s linear infinite;
+            transform-origin: right center;
+        }
+
+        .wheel {
+            width: 28px;
+            height: 28px;
+            background: #333;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -14px;
+            border: 4px solid #fff;
+            box-shadow: 0 0 0 6px #2196F3;
+            animation: wheel-spin 0.6s linear infinite;
+        }
+
+        .wheel.front {
+            left: 25px;
+        }
+
+        .wheel.rear {
+            left: 85px;
+        }
+
+        .load {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #FF9800;
+            border-radius: 50%;
+            opacity: 0;
+            animation: falling 2.8s linear infinite;
+        }
+
+        @keyframes drive {
+            0% {
+                left: -50px;
+            }
+
+            100% {
+                left: 280px;
+            }
+        }
+
+        @keyframes dump {
+
+            0%,
+            60% {
+                transform: rotate(0deg);
+            }
+
+            70%,
+            85% {
+                transform: rotate(-35deg);
+            }
+
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+
+        @keyframes wheel-spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes falling {
+            0% {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            65% {
+                opacity: 1;
+            }
+
+            80% {
+                transform: translateY(60px);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(80px);
+            }
+        }
+
+        .loader-text {
+            font-size: 17px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .copyable {
+            cursor: pointer;
+            position: relative;
+        }
+
+        .copyable:hover {
+            background-color: #e3f2fd !important;
+            color: #1976D2;
+        }
+
+        /* --- Row Done Effect --- */
+        tr.row-done td {
+            background-color: #f5f5f5 !important;
+            color: #9e9e9e !important;
+            text-decoration: line-through;
+            pointer-events: none;
+            /* Disable clicking inside the row */
+        }
+
+        tr.row-done td input[type="checkbox"] {
+            pointer-events: auto;
+            /* Exception: Still allow unchecking if needed */
+            filter: grayscale(1);
+        }
+
+        tr.row-done:hover td.col-fixed-1,
+        tr.row-done:hover td.col-fixed-2 {
+            background-color: #f5f5f5 !important;
+        }
+
+        .copy-toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .loading {
+            color: #ff9900;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .table-wrapper {
+            flex: 1;
+            overflow: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        th {
+            background-color: #2196F3;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        .col-fixed-1,
+        .col-fixed-2 {
+            position: sticky;
+            z-index: 1;
+            background: #e8f0fe;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .col-fixed-1 {
+            left: 0;
+        }
+
+        .col-fixed-2 {
+            left: var(--col1-width, 100px);
+            box-shadow: 6px 0 16px -4px rgba(0, 0, 0, 0.2);
+        }
+
+        th.col-fixed-1 {
+            z-index: 3;
+            background: #1565C0;
+            color: white;
+            font-weight: bold;
+        }
+
+        th.col-fixed-2 {
+            z-index: 3;
+            background: #1565C0;
+            color: white;
+            font-weight: bold;
+            box-shadow: 6px 0 16px -4px rgba(0, 0, 0, 0.3);
+        }
+
+        tr:nth-child(even) td.col-fixed-1,
+        tr:nth-child(even) td.col-fixed-2 {
+            background: #dce7f7;
+        }
+
+        tr:hover td.col-fixed-1,
+        tr:hover td.col-fixed-2 {
+            background: #bbdefb;
+        }
+
+        tr .col-fixed-2 {
+            border-right: 3px solid #1565C0;
+        }
+
+        .khoa-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            padding: 8px 0;
+            flex-shrink: 0;
+        }
+
+        .khoa-stats:empty {
+            display: none;
+        }
+
+        .khoa-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            background: #fff3e0;
+            color: #e65100;
+            border: 1px solid #ffcc80;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .khoa-badge:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .khoa-badge.active {
+            background: #e65100;
+            color: white;
+            border-color: #e65100;
+        }
+
+        .khoa-badge.active .count {
+            background: white;
+            color: #e65100;
+        }
+
+        .khoa-badge .count {
+            background: #e65100;
+            color: white;
+            border-radius: 50%;
+            min-width: 22px;
+            height: 22px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .khoa-badge.done {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-color: #a5d6a7;
+        }
+
+        .khoa-badge.done .count {
+            background: #2e7d32;
+        }
+
+
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .check-column {
+            text-align: center;
+            width: 60px;
+            min-width: 60px;
+        }
+
+        input[type="checkbox"] {
+            transform: scale(1.5);
+            cursor: pointer;
+        }
+
+        .saving {
+            background-color: #ffe4b5 !important;
+        }
+
+        #modalStatsTable {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        #modalStatsTable th,
+        #modalStatsTable td {
+            border: 1px solid #2196F3;
+            padding: 10px;
+            text-align: left;
+        }
+
+        #modalStatsTable th {
+            background: #2196F3;
+            color: white;
+        }
+
+        #modalStatsTable th:last-child {
+            text-align: right;
+        }
+
+        #modalStatsTable tr.total {
+            background: #f8d7da;
+            font-weight: bold;
+            color: #d32f2f;
+        }
+
+        .footer {
+            text-align: center;
+            margin: 20px auto 0;
+            padding-top: 15px;
+            color: #666;
+            font-size: 13px;
+            border-top: 1px solid #ddd;
+            flex-shrink: 0;
+            max-width: 80%;
+            align-self: center;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 700px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #f00;
+        }
+
+        /* Password Modal */
+        .pw-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pw-modal-overlay.show {
+            display: flex;
+        }
+
+        .pw-modal {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            min-width: 300px;
+            max-width: 90%;
+        }
+
+        .pw-modal h3 {
+            margin: 0 0 6px;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .pw-modal p {
+            margin: 0 0 16px;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .pw-modal input[type="password"] {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            margin-bottom: 16px;
+            text-align: center;
+            letter-spacing: 4px;
+        }
+
+        .pw-modal input[type="password"]:focus {
+            border-color: #2196F3;
+        }
+
+        .pw-modal .pw-error {
+            color: #d32f2f;
+            font-size: 13px;
+            margin-bottom: 12px;
+            display: none;
+        }
+
+        .pw-modal .pw-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .pw-modal .pw-btns button {
+            padding: 8px 24px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .pw-modal .btn-confirm {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .pw-modal .btn-cancel {
+            background: #eee;
+            color: #333;
+        }
+
+        @media (max-width: 480px) {
+            .pw-modal {
+                min-width: unset;
+                width: 90%;
+                padding: 18px;
+            }
+        }
+
+        .update-toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 24px 36px;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 600;
+            text-align: center;
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .update-toast.show {
+            display: flex;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .update-toast-icon {
+            font-size: 40px;
+        }
+
+        .update-toast-msg {
+            line-height: 1.5;
+        }
+
+        @media (max-width: 480px) {
+            .update-toast {
+                padding: 18px 24px;
+                font-size: 14px;
+                width: 85%;
+                border-radius: 12px;
+            }
+
+            .update-toast-icon {
+                font-size: 32px;
+            }
+        }
+
+        /* =================== RESPONSIVE =================== */
+
+        /* Tablet & small laptop */
+        @media (max-width: 1024px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .controls {
+                gap: 10px;
+                padding: 12px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+        }
+
+        /* Tablet portrait */
+        @media (max-width: 768px) {
+            body {
+                padding: 8px;
+            }
+
+            .container {
+                padding: 10px;
+                border-radius: 6px;
+            }
+
+            h2 {
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+                padding: 10px;
+            }
+
+            .controls>div,
+            .controls>.filter-group {
+                border-left: none;
+                padding-left: 0;
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .controls label {
+                font-size: 13px;
+            }
+
+            select,
+            button {
+                font-size: 14px;
+                padding: 7px 10px;
+                flex: 1;
+                min-width: 120px;
+            }
+
+            .filter-group {
+                border-left: none !important;
+                padding-left: 0 !important;
+                border-top: 1px solid #ddd;
+                padding-top: 8px;
+            }
+
+            th,
+            td {
+                padding: 8px 6px;
+                font-size: 13px;
+            }
+
+            .khoa-badge {
+                font-size: 12px;
+                padding: 3px 10px;
+            }
+
+            .khoa-badge .count {
+                min-width: 20px;
+                height: 20px;
+                font-size: 11px;
+            }
+
+            #message {
+                font-size: 13px;
+            }
+
+            .modal-content {
+                margin: 3% auto;
+                padding: 15px;
+                width: 95%;
+            }
+
+            .footer {
+                max-width: 100%;
+                font-size: 11px;
+                margin-top: 10px;
+                padding-top: 10px;
+            }
+
+            .col-fixed-2 {
+                box-shadow: 4px 0 10px -3px rgba(0, 0, 0, 0.2);
+            }
+
+            tr .col-fixed-2 {
+                border-right-width: 2px;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
+
+            .container {
+                padding: 8px;
+                border-radius: 4px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            h2 {
+                font-size: 14px;
+                margin-bottom: 8px;
+            }
+
+            .controls {
+                padding: 8px;
+                gap: 6px;
+            }
+
+            .controls label {
+                font-size: 12px;
+                display: block;
+                margin-bottom: 2px;
+            }
+
+            select,
+            button {
+                font-size: 13px;
+                padding: 6px 8px;
+                width: 100%;
+                min-width: unset;
+            }
+
+            button {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+
+            th,
+            td {
+                padding: 6px 5px;
+                font-size: 12px;
+            }
+
+            input[type="checkbox"] {
+                transform: scale(1.2);
+            }
+
+            .check-column {
+                width: 45px;
+                min-width: 45px;
+            }
+
+            .khoa-stats {
+                gap: 5px;
+                padding: 5px 0;
+            }
+
+            .khoa-badge {
+                font-size: 11px;
+                padding: 2px 8px;
+            }
+
+            .khoa-badge .count {
+                min-width: 18px;
+                height: 18px;
+                font-size: 10px;
+            }
+
+            .loader-text {
+                font-size: 14px;
+            }
+
+            .truck-container {
+                width: 160px;
+                height: 70px;
+                transform: scale(0.75);
+            }
+
+            .modal-content {
+                margin: 2% auto;
+                padding: 12px;
+                width: 98%;
+                border-radius: 8px;
+            }
+
+            .modal-content h3 {
+                font-size: 15px;
+            }
+
+            #modalStatsTable {
+                font-size: 13px;
+            }
+
+            #modalStatsTable th,
+            #modalStatsTable td {
+                padding: 7px 5px;
+            }
+
+            .copy-toast {
+                padding: 8px 16px;
+                font-size: 13px;
+                bottom: 10px;
+            }
+
+            .footer {
+                font-size: 10px;
+                margin-top: 8px;
+                padding-top: 8px;
+            }
+
+            .col-fixed-1,
+            .col-fixed-2 {
+                font-size: 11px;
+                position: static;
+                background: transparent;
+                font-weight: normal;
+                color: inherit;
+                box-shadow: none;
+            }
+
+            th.col-fixed-1,
+            th.col-fixed-2 {
+                position: sticky;
+                top: 0;
+                left: auto;
+                background: #2196F3;
+                z-index: 2;
+            }
+
+            tr .col-fixed-2 {
+                border-right: 1px solid #ddd;
+            }
+        }
+
+        /* ===== INDEX.HTML STYLES ===== */
+
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        /* ========== DARK MODE ========== */
+        body.dark-mode {
+            --primary: #818cf8;
+            --primary-hover: #6366f1;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --th-bg: #1e293b;
+            --hover-bg: #334155;
+            --badge-bg: #312e81;
+        }
+
+        body.dark-mode .navbar {
+            background: #1e293b;
+            border-bottom-color: #334155;
+        }
+
+        body.dark-mode .container {
+            background: #0f172a;
+        }
+
+        body.dark-mode #content {
+            background: #0f172a;
+        }
+
+        body.dark-mode .tabs {
+            background: #334155;
+        }
+
+        body.dark-mode .tab-btn.active {
+            background: #475569;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode th {
+            background: #0f172a !important;
+            color: #94a3b8 !important;
+            border-bottom-color: #334155;
+        }
+
+        body.dark-mode td {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border-bottom-color: #334155;
+        }
+
+        body.dark-mode tr:hover td {
+            background: #334155 !important;
+        }
+
+        body.dark-mode .badge {
+            background: #312e81;
+            color: #a5b4fc;
+        }
+
+        body.dark-mode .clickable-badge:hover {
+            background: #6366f1;
+        }
+
+        body.dark-mode .card {
+            background: var(--card-bg);
+        }
+
+        body.dark-mode .table-wrapper {
+            border-color: #334155 !important;
+            background: var(--card-bg);
+        }
+
+        body.dark-mode table {
+            background: var(--card-bg);
+        }
+
+        body.dark-mode .chart-section {
+            background: #1e293b;
+            border-right-color: #334155;
+        }
+
+        body.dark-mode .table-section {
+            background: #1e293b;
+        }
+
+        body.dark-mode .modal-container {
+            background: #1e293b;
+        }
+
+        body.dark-mode .modal-header {
+            border-bottom-color: #334155;
+        }
+
+        body.dark-mode .modal-body th {
+            background: #0f172a !important;
+        }
+
+        body.dark-mode .modal-body td {
+            background: #1e293b;
+            border-bottom-color: #334155;
+        }
+
+        body.dark-mode #sheetFilter {
+            background: #334155 !important;
+            color: var(--primary) !important;
+            border-color: #475569 !important;
+        }
+
+        body.dark-mode #sheetFilter option {
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
+        body.dark-mode #drugSearchFilter,
+        body.dark-mode #idx_doctorFilter {
+            background: #334155 !important;
+            color: #e2e8f0 !important;
+            border-color: #475569 !important;
+        }
+
+        body.dark-mode .footer {
+            background: #0f172a !important;
+            color: #94a3b8 !important;
+            border-top: 1px solid #334155 !important;
+        }
+
+        body.dark-mode .footer strong {
+            color: #e2e8f0;
+        }
+
+        /* Drug Modal Dark Mode */
+        body.dark-mode .drug-modal-container {
+            background: #1e293b;
+        }
+
+        body.dark-mode .drug-modal-header {
+            background: linear-gradient(135deg, #1e293b 0%, #1e1b3a 100%);
+            border-bottom-color: #334155;
+        }
+
+        body.dark-mode .drug-modal-summary {
+            background: #0f172a;
+            border-bottom-color: #334155;
+        }
+
+        body.dark-mode .drug-summary-card {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        body.dark-mode .drug-summary-card .label {
+            color: #94a3b8;
+        }
+
+        body.dark-mode .drug-doctor-list {
+            background: #0f172a;
+            border-bottom-color: #334155;
+        }
+
+        body.dark-mode .drug-doctor-list .section-label {
+            color: #7dd3fc;
+        }
+
+        body.dark-mode .drug-doctor-chip {
+            background: #1e293b;
+            color: #93c5fd;
+            border-color: #334155;
+        }
+
+        body.dark-mode .drug-doctor-chip:hover {
+            background: #334155;
+            border-color: #475569;
+        }
+
+        body.dark-mode .drug-doctor-chip.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        body.dark-mode .drug-error-list {
+            background: #1a1407;
+            border-bottom-color: #334155;
+        }
+
+        body.dark-mode .drug-error-chip {
+            background: #422006;
+            color: #fdba74;
+            border-color: #78350f;
+        }
+
+        body.dark-mode .drug-modal-body th {
+            background: #4f46e5;
+        }
+
+        body.dark-mode .drug-modal-body td {
+            border-bottom-color: #334155;
+        }
+
+        body.dark-mode .drug-modal-body tr:hover td {
+            background: #334155;
+        }
+
+        body.dark-mode .drug-row-clickable:hover td {
+            background: #1e2d4a !important;
+        }
+
+        body.dark-mode .drug-meta-tag {
+            opacity: 0.9;
+        }
+
+        /* Dark mode toggle button */
+        .dark-toggle {
+            background: none;
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            padding: 6px 14px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-main);
+            font-family: inherit;
+        }
+
+        .dark-toggle:hover {
+            border-color: var(--primary);
+            background: rgba(79, 70, 229, 0.08);
+        }
+
+        .dark-toggle .toggle-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex: 0 0 auto;
+            z-index: 100;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Tabs styling */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: #e2e8f0;
+            padding: 0.5rem;
+            border-radius: 12px;
+            /* width: fit-content; */
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+        }
+
+        .tab-btn.active {
+            background: var(--card-bg);
+            color: var(--primary);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            display: none;
+            flex: 1;
+            flex-direction: column;
+        }
+
+        .card.active {
+            display: flex;
+        }
+
+        #content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            max-height: 70vh;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: var(--th-bg, #f8fafc);
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            position: sticky;
+            top: 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem;
+        }
+
+        tr:hover td {
+            background: var(--hover-bg, #f1f5f9);
+        }
+
+        .badge {
+            background: var(--badge-bg, #e0e7ff);
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        /* Loading Spinner */
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 60vh;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--border-color);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loader-text {
+            margin-top: 1rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-container {
+            background: var(--card-bg);
+            width: 90%;
+            max-width: 900px;
+            max-height: 80vh;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(20px);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.show .modal-container {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .modal-body {
+            padding: 0;
+            /* Bỏ padding để header full width */
+            overflow-y: auto;
+        }
+
+        .modal-body th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* Tạo bóng để phân cách với dữ liệu cuộn ở dưới */
+        }
+
+        .clickable-badge {
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .clickable-badge:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* Drug Detail Modal */
+        .drug-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(3px);
+        }
+
+        .drug-modal-overlay.show {
+            display: flex;
+        }
+
+        .drug-modal-container {
+            background: white;
+            border-radius: 12px;
+            width: 96vw;
+            height: 94vh;
+            max-width: none;
+            max-height: none;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: translateY(20px);
+            animation: drugModalIn 0.25s ease forwards;
+        }
+
+        @keyframes drugModalIn {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .drug-modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            background: linear-gradient(135deg, #f0f4ff 0%, #faf5ff 100%);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .drug-modal-header h2 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        .drug-modal-header .drug-meta {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .drug-modal-header .drug-meta-tag {
+            font-size: 0.8rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .drug-modal-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            padding: 1.25rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #fafbfc;
+        }
+
+        .drug-summary-card {
+            text-align: center;
+            padding: 14px 10px;
+            border-radius: 12px;
+            background: white;
+            border: 1px solid #e2e8f0;
+        }
+
+        .drug-summary-card .val {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .drug-summary-card .label {
+            font-size: 0.78rem;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        .drug-doctor-list {
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #f0f9ff;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .drug-doctor-list .section-label {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #0c4a6e;
+            margin-right: 6px;
+            white-space: nowrap;
+        }
+
+        .drug-doctor-chip {
+            font-size: 0.8rem;
+            padding: 5px 12px;
+            border-radius: 20px;
+            background: white;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s;
+            cursor: default;
+        }
+
+        .drug-doctor-chip:hover {
+            background: #dbeafe;
+            border-color: #93c5fd;
+        }
+
+        .drug-doctor-chip.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        .drug-doctor-chip.active .chip-count {
+            background: white;
+            color: #3b82f6;
+        }
+
+        .drug-doctor-chip .chip-count {
+            background: #3b82f6;
+            color: white;
+            font-size: 0.7rem;
+            padding: 1px 7px;
+            border-radius: 10px;
+            font-weight: 700;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        .drug-error-list {
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: #fffdf7;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .drug-error-chip {
+            font-size: 0.8rem;
+            padding: 5px 12px;
+            border-radius: 20px;
+            background: #fff3e0;
+            color: #e65100;
+            border: 1px solid #ffe0b2;
+            font-weight: 500;
+        }
+
+        .drug-modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .drug-modal-body table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .drug-modal-body th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--primary);
+            color: white;
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .drug-modal-body td {
+            padding: 10px 16px;
+            font-size: 0.85rem;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        .drug-modal-body tr:hover td {
+            background: #f8fafc;
+        }
+
+        .drug-row-clickable {
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .drug-row-clickable:hover td {
+            background: #f0f4ff !important;
+        }
+
+        /* Dashboard Grid Layout */
+        .dashboard-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 2fr 3fr;
+            /* 40% Chart - 60% Table */
+            gap: 0;
+            overflow: hidden;
+            background: var(--bg-color);
+        }
+
+        .chart-section {
+            padding: 1.5rem;
+            border-right: 2px solid var(--border-color);
+            background: var(--card-bg);
+            height: 100%;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .table-section {
+            padding: 0;
+            margin: 0;
+            background: var(--card-bg);
+            height: 100%;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                /* Trở lại 1 cột trên màn hình nhỏ */
+            }
+
+            .chart-section {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                position: static;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOP NAVIGATION -->
+    <div class="main-navbar">
+        <span class="app-title">&#x1F3E5; TTYTKV Ngã Năm</span>
+        <button class="main-tab-btn active" onclick="switchMainTab('page-noi', this)">&#x1F4CB; Nội trú</button>
+        <button class="main-tab-btn" onclick="switchMainTab('page-thongke', this)">&#x1F4CA; Ngoại trú</button>
+    </div>
+
+    <!-- PAGE 1: NOI.HTML -->
+    <div id="page-noi" class="main-page active">
+
+        <div class="container">
+            <h2>Chỉnh sửa chẩn đoán còn sai sót</h2>
+            <div class="controls">
+                <div>
+                    <label for="sheetSelect"><strong>1. Chọn tháng: </strong></label>
+                    <select id="sheetSelect" disabled onchange="resetAutoRefresh()">
+                        <option value="">Đang tải...</option>
+                    </select>
+                    <button id="btnFilter" onclick="fetchData(false)" disabled>Tải Dữ Liệu</button>
+                </div>
+                <div class="filter-group">
+                    <label for="statusFilter"><strong>2. Lọc trạng thái: </strong></label>
+                    <select id="statusFilter" onchange="onStatusChange()" disabled>
+                        <option value="all">Hiển thị Tất cả</option>
+                        <option value="unchecked" selected>Chỉ hiện Chưa check ❌</option>
+                        <option value="checked">Chỉ hiện Đã check ✅</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="khoaFilter"><strong>3. Lọc theo Khoa: </strong></label>
+                    <select id="khoaFilter" onchange="onKhoaChange()" disabled>
+                        <option value="all">Tất cả Khoa</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="doctorFilter"><strong>4. Lọc theo Bác sĩ: </strong></label>
+                    <select id="doctorFilter" onchange="applyFilter()" disabled>
+                        <option value="all">Tất cả Bác sĩ</option>
+                    </select>
+                </div>
+                <button onclick="showStatsModal()" style="background:#2196F3;">📊 Xem Thống Kê</button>
+                <button onclick="manualRefresh()" style="background:#FF9800;" id="btnRefresh">🔄 Làm mới dữ
+                    liệu</button>
+            </div>
+
+            <div id="message"></div>
+            <div id="khoaStats" class="khoa-stats"></div>
+            <div style="text-align:center;color:red;margin-top:10px">
+                SAU KHI KẾT THÚC BỆNH ÁN NHỚ <strong>TICK VÀO Ô TRẠNG THÁI ✔️</strong><br>
+                <span style="color:#1976D2; font-size:14px;">Click vào ô <strong>Mã bệnh</strong> để tự động copy</span>
+            </div>
+
+            <!-- Loader -->
+            <div id="loader" class="loader-overlay">
+                <div class="truck-container">
+                    <div class="truck">
+                        <div class="truck-body">
+                            <div class="dump-bed"></div>
+                            <div class="truck-cab"></div>
+                        </div>
+                        <div class="wheel front"></div>
+                        <div class="wheel rear"></div>
+                    </div>
+                    <div class="load" style="left: 80px; animation-delay: 0.2s;"></div>
+                    <div class="load" style="left: 95px; animation-delay: 0.5s;"></div>
+                    <div class="load" style="left: 110px; animation-delay: 0.8s;"></div>
+                </div>
+                <div id="loader-text" class="loader-text">Đang tải dữ liệu từ Google Sheets...</div>
+            </div>
+
+            <div class="table-wrapper">
+                <table id="dataTable" style="display: none;">
+                    <thead id="tableHead"></thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="footer">
+                &copy; 2026 - Công cụ được phát triển bởi <strong>Thanh Tòng</strong>.<br>Phòng KHNV
+            </div>
+        </div>
+
+        <div id="statsModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="hideStatsModal()">&times;</span>
+                <h3>📊 Thống kê bệnh án CHƯA SỬA theo Bác sĩ</h3>
+                <table id="modalStatsTable">
+                    <thead>
+                        <tr>
+                            <th>Bác sĩ</th>
+                            <th style="text-align:right">Chưa sửa</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modalStatsBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="copyToast" class="copy-toast">✅ Đã copy mã bệnh!</div>
+
+        <div id="updateToast" class="update-toast">
+            <div class="update-toast-icon">✅</div>
+            <div class="update-toast-msg">Cập nhật xong nhớ báo cho IT để thay thế</div>
+        </div>
+
+        <div id="pwOverlay" class="pw-modal-overlay">
+            <div class="pw-modal">
+                <h3>🔐 Xác nhận quyền</h3>
+                <p>Nhập mật khẩu để đánh dấu Done</p>
+                <input type="password" id="pwInput" placeholder="Nhập mật khẩu...">
+                <div class="pw-error" id="pwError">Sai mật khẩu!</div>
+                <div class="pw-btns">
+                    <button class="btn-cancel" onclick="cancelPwModal()">Hủy</button>
+                    <button class="btn-confirm" onclick="confirmPwModal()">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const DONE_PASSWORD = 'nttong';
+            let pendingDone = null; // { sheetName, rowIndex, checkbox, isChecked }
+
+            const API_URL = 'https://script.google.com/macros/s/AKfycbzaNgb6oUVc-eIJELZUSxe2CJBQjaBmrWEc-0rsu0fhwmozigmiJmFqINkH94eTpzvzPA/exec';
+            let globalData = [];
+            let currentSelectedSheet = '';
+            let doctorColumnName = null;
+            let khoaColumnName = null;
+
+            const khoaFilterEl = document.getElementById('khoaFilter');
+
+            const sheetSelect = document.getElementById('sheetSelect');
+            const statusFilter = document.getElementById('statusFilter');
+            const doctorFilter = document.getElementById('doctorFilter');
+            const btnFilter = document.getElementById('btnFilter');
+            const btnRefresh = document.getElementById('btnRefresh');
+            const msgDiv = document.getElementById('message');
+            const loader = document.getElementById('loader');
+            const loaderText = document.getElementById('loader-text');
+            const copyToast = document.getElementById('copyToast');
+
+            function showLoader(text = "Đang tải dữ liệu...") {
+                loaderText.innerText = text;
+                loader.style.display = 'flex';
+            }
+            function hideLoader() {
+                loader.style.display = 'none';
+            }
+            function showCopyToast() {
+                copyToast.style.display = 'flex';
+                setTimeout(() => copyToast.style.display = 'none', 1800);
+            }
+            function showUpdateToast() {
+                const toast = document.getElementById('updateToast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2500);
+            }
+
+            function copyToClipboard(text) {
+                if (!text) return;
+                const str = String(text).trim();
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(str).then(showCopyToast).catch(() => fallbackCopy(str));
+                } else {
+                    fallbackCopy(str);
+                }
+            }
+            function fallbackCopy(text) {
+                const ta = document.createElement('textarea');
+                ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = 0;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                showCopyToast();
+            }
+
+            window.onload = function () {
+                // 1. Hiện ngay danh sách sheet từ cache
+                const cachedSheets = localStorage.getItem('noi_sheets_cache');
+                if (cachedSheets) {
+                    try {
+                        const sheets = JSON.parse(cachedSheets).filter(s => !s.toLowerCase().includes('done'));
+                        if (sheets && sheets.length > 0) {
+                            sheetSelect.innerHTML = '';
+                            sheets.forEach(s => { let o = document.createElement('option'); o.value = s; o.text = s; sheetSelect.appendChild(o); });
+                            sheetSelect.disabled = false;
+                            btnFilter.disabled = false;
+                            msgDiv.innerText = 'Dữ liệu cache. Đang kiểm tra cập nhật...';
+                            msgDiv.className = 'loading';
+                        }
+                    } catch (e) { }
+                } else {
+                    msgDiv.className = 'loading';
+                    msgDiv.innerText = 'Đang kết nối với Google Sheets...';
+                }
+                // 2. Tải ngầm danh sách sheet mới nhất
+                fetch(API_URL + '?action=getSheets').then(r => r.json()).then(result => {
+                    if (result.status === 'success') {
+                        try { localStorage.setItem('noi_sheets_cache', JSON.stringify(result.sheets)); } catch (e) { }
+                        const filteredSheets = result.sheets.filter(s => !s.toLowerCase().includes('done'));
+                        const prevVal = sheetSelect.value;
+                        sheetSelect.innerHTML = '';
+                        filteredSheets.forEach(s => { let o = document.createElement('option'); o.value = s; o.text = s; sheetSelect.appendChild(o); });
+                        if (prevVal && filteredSheets.includes(prevVal)) sheetSelect.value = prevVal;
+                        sheetSelect.disabled = false;
+                        btnFilter.disabled = false;
+                        msgDiv.innerText = 'Đã tải xong! Vui lòng bấm "Tải Dữ Liệu".';
+                        msgDiv.className = 'success';
+                    }
+                }).catch(() => {
+                    if (!cachedSheets) { msgDiv.innerText = 'Lỗi kết nối API.'; msgDiv.className = 'error'; }
+                    else { msgDiv.innerText = 'Dùng dữ liệu cache (mạng chậm).'; msgDiv.className = 'loading'; }
+                });
+            };
+
+            function resetAutoRefresh() {
+                doctorFilter.innerHTML = '<option value="all">Tất cả Bác sĩ</option>';
+                doctorFilter.disabled = true;
+                khoaFilterEl.innerHTML = '<option value="all">Tất cả Khoa</option>';
+                khoaFilterEl.disabled = true;
+                statusFilter.disabled = true;
+            }
+
+            function detectDoctorColumn(data) {
+                if (!data || data.length === 0) return null;
+                const headers = Object.keys(data[0]);
+                if (headers.includes('Tên Bác Sỹ (Lỗi)')) return 'Tên Bác Sỹ (Lỗi)';
+                const keywords = ['bác sĩ', 'bác sỹ', 'bs', 'doctor', 'tên bs', 'phụ trách', 'điều trị', 'chủ trị'];
+                for (let h of headers) {
+                    const lower = h.toLowerCase().trim();
+                    if (keywords.some(k => lower.includes(k))) return h;
+                }
+                return null;
+            }
+
+            function detectKhoaColumn(data) {
+                if (!data || data.length === 0) return null;
+                const headers = Object.keys(data[0]);
+                for (let h of headers) {
+                    const lower = h.toLowerCase().trim();
+                    if (lower === 'khoa' || lower.includes('khoa')) return h;
+                }
+                return null;
+            }
+
+            function populateKhoaFilter() {
+                khoaColumnName = detectKhoaColumn(globalData);
+                if (!khoaColumnName) return;
+
+                const khoaSet = new Set();
+                const statusType = statusFilter.value;
+
+                globalData.forEach(row => {
+                    const isChecked = (row['Check'] === 'TRUE' || row['Check'] === true || row['Check'] === 'true');
+                    if (statusType === 'unchecked' && isChecked) return;
+                    if (statusType === 'checked' && !isChecked) return;
+
+                    let v = String(row[khoaColumnName] || '').trim();
+                    if (v) khoaSet.add(v);
+                });
+
+                const prev = khoaFilterEl.value;
+                khoaFilterEl.innerHTML = '<option value="all">Tất cả Khoa</option>';
+                Array.from(khoaSet).sort().forEach(v => {
+                    let o = document.createElement('option');
+                    o.value = v; o.textContent = v;
+                    khoaFilterEl.appendChild(o);
+                });
+                if ([...khoaSet].includes(prev)) khoaFilterEl.value = prev;
+                khoaFilterEl.disabled = false;
+            }
+
+            function onKhoaChange() {
+                populateDoctorFilter();
+                applyFilter();
+            }
+
+            function populateDoctorFilter() {
+                doctorColumnName = detectDoctorColumn(globalData);
+                if (!doctorColumnName) return;
+
+                const doctors = new Set();
+                const statusType = statusFilter.value;
+                const selKhoa = khoaFilterEl.value;
+
+                globalData.forEach(row => {
+                    const isChecked = (row['Check'] === 'TRUE' || row['Check'] === true || row['Check'] === 'true');
+
+                    if (statusType === 'unchecked' && isChecked) return;
+                    if (statusType === 'checked' && !isChecked) return;
+
+                    // Lọc theo Khoa đang chọn
+                    if (selKhoa !== 'all' && khoaColumnName) {
+                        let khoaStr = String(row[khoaColumnName] || '').trim();
+                        if (khoaStr !== selKhoa) return;
+                    }
+
+                    let docStr = String(row[doctorColumnName] || '').trim();
+                    if (docStr) {
+                        const splitDocs = docStr.split(/[,;\/]/).map(d => d.trim()).filter(Boolean);
+                        splitDocs.forEach(d => doctors.add(d));
+                    }
+                });
+
+                const prev = doctorFilter.value;
+                doctorFilter.innerHTML = '<option value="all">Tất cả Bác sĩ</option>';
+                Array.from(doctors).sort().forEach(d => {
+                    let o = document.createElement('option');
+                    o.value = d; o.textContent = d;
+                    doctorFilter.appendChild(o);
+                });
+                if ([...doctors].includes(prev)) {
+                    doctorFilter.value = prev;
+                } else {
+                    doctorFilter.value = 'all';
+                }
+                doctorFilter.disabled = false;
+            }
+
+            function isCodeColumn(header) {
+                const lower = header.toLowerCase().trim();
+                return lower.includes('mã bệnh') || lower.includes('mã bn') ||
+                    lower.includes('mabenh') || lower.includes('mabn') ||
+                    lower === 'mã' || lower.includes('code');
+            }
+
+            function isDoneColumn(header) {
+                const lower = header.toLowerCase().trim();
+                return lower === 'done' || lower === 'hoàn tất';
+            }
+
+            // ====================== THÊM MỚI: Tự động render khi đổi trạng thái ======================
+            function onStatusChange() {
+                populateDoctorFilter();   // Cập nhật danh sách bác sĩ
+                populateKhoaFilter();     // Cập nhật danh sách khoa
+                applyFilter();            // Render lại bảng dữ liệu ngay lập tức
+            }
+            // ====================================================================================
+
+            function updateKhoaStats() {
+                const container = document.getElementById('khoaStats');
+                if (!globalData.length || !khoaColumnName) {
+                    container.innerHTML = '';
+                    return;
+                }
+                const counts = {};
+                globalData.forEach(row => {
+                    const isChecked = (row['Check'] === 'TRUE' || row['Check'] === true || row['Check'] === 'true');
+                    if (!isChecked) {
+                        let k = String(row[khoaColumnName] || '').trim();
+                        if (k) counts[k] = (counts[k] || 0) + 1;
+                    }
+                });
+                const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+                if (sorted.length === 0) {
+                    container.innerHTML = '<span style="color:green;font-weight:bold;">✅ Tất cả khoa đã sửa xong!</span>';
+                    return;
+                }
+                const currentKhoa = khoaFilterEl.value;
+                container.innerHTML = sorted.map(([name, count]) => {
+                    const isActive = currentKhoa === name ? ' active' : '';
+                    return `<span class="khoa-badge${isActive}" onclick="filterByKhoa('${name.replace(/'/g, "\\'")}')"><span>${name}</span><span class="count">${count}</span></span>`;
+                }).join('');
+            }
+
+            function filterByKhoa(khoaName) {
+                if (khoaFilterEl.value === khoaName) {
+                    khoaFilterEl.value = 'all';
+                } else {
+                    khoaFilterEl.value = khoaName;
+                }
+                onKhoaChange();
+            }
+
+            function updateModalStatistics() {
+                const tbody = document.getElementById('modalStatsBody');
+                if (!globalData.length || !doctorColumnName) return;
+                const unchecked = {};
+                let total = 0;
+                globalData.forEach(row => {
+                    const isChecked = (row['Check'] === 'TRUE' || row['Check'] === true || row['Check'] === 'true');
+                    if (!isChecked) {
+                        let docStr = String(row[doctorColumnName] || '').trim();
+                        if (docStr) {
+                            const doctors = docStr.split(/[,;\/]/).map(d => d.trim()).filter(Boolean);
+                            doctors.forEach(doc => {
+                                unchecked[doc] = (unchecked[doc] || 0) + 1;
+                                total++;
+                            });
+                        }
+                    }
+                });
+                const sortedDoctors = Object.entries(unchecked).filter(([_, c]) => c > 0).sort((a, b) => b[1] - a[1]);
+                if (sortedDoctors.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="2" style="text-align:center;color:green;font-weight:bold;padding:30px;">✅ Tất cả bệnh án đã được sửa xong!</td></tr>`;
+                    return;
+                }
+                let rows = '';
+                sortedDoctors.forEach(([name, count]) => rows += `<tr><td>${name}</td><td style="text-align:right;font-weight:bold">${count}</td></tr>`);
+                rows += `<tr class="total"><td>TỔNG CỘNG</td><td style="text-align:right">${total}</td></tr>`;
+                tbody.innerHTML = rows;
+            }
+
+            function showStatsModal() {
+                updateModalStatistics();
+                document.getElementById('statsModal').style.display = 'block';
+            }
+            function hideStatsModal() {
+                document.getElementById('statsModal').style.display = 'none';
+            }
+
+            function manualRefresh() {
+                if (!currentSelectedSheet) {
+                    alert('Vui lòng chọn tháng và bấm "Tải Dữ Liệu" trước!');
+                    return;
+                }
+                fetchData(false);
+            }
+
+            function fetchData(isAuto = false) {
+                currentSelectedSheet = sheetSelect.value;
+                if (!currentSelectedSheet) return;
+                const cacheKey = 'noi_data_' + currentSelectedSheet;
+                const cachedSheet = localStorage.getItem(cacheKey);
+
+                // 1. Hiện từ cache ngay nếu có
+                if (cachedSheet && !isAuto) {
+                    try {
+                        const cached = JSON.parse(cachedSheet);
+                        if (cached && cached.length > 0) {
+                            globalData = cached;
+                            statusFilter.disabled = false;
+                            populateDoctorFilter(); populateKhoaFilter();
+                            statusFilter.value = 'unchecked'; doctorFilter.value = 'all'; khoaFilterEl.value = 'all';
+                            applyFilter();
+                            msgDiv.innerText = 'Dữ liệu cache - đang cập nhật mới...';
+                            msgDiv.className = 'loading';
+                        }
+                    } catch (e) { }
+                } else {
+                    showLoader(isAuto ? 'Đang làm mới...' : 'Đang tải dữ liệu từ Google Sheets...');
+                }
+
+                btnFilter.disabled = true; btnRefresh.disabled = true;
+
+                // 2. Tải ngầm dữ liệu mới nhất
+                fetch(`${API_URL}?sheetName=${encodeURIComponent(currentSelectedSheet)}`)
+                    .then(r => r.json())
+                    .then(result => {
+                        hideLoader();
+                        btnFilter.disabled = false; btnRefresh.disabled = false;
+                        if (result.status === 'success') {
+                            const newDataStr = JSON.stringify(result.data || []);
+                            if (newDataStr !== cachedSheet) {
+                                try { localStorage.setItem(cacheKey, newDataStr); } catch (e) { }
+                                globalData = result.data || [];
+                                if (globalData.length > 0) {
+                                    statusFilter.disabled = false;
+                                    populateDoctorFilter(); populateKhoaFilter();
+                                    if (!isAuto) { statusFilter.value = 'unchecked'; doctorFilter.value = 'all'; khoaFilterEl.value = 'all'; }
+                                    applyFilter();
+                                } else {
+                                    msgDiv.innerText = 'Trang không có dữ liệu.'; msgDiv.className = 'error'; return;
+                                }
+                            }
+                            msgDiv.className = 'success';
+                        }
+                    })
+                    .catch(() => {
+                        hideLoader();
+                        btnFilter.disabled = false; btnRefresh.disabled = false;
+                        if (!cachedSheet) { msgDiv.innerText = 'Lỗi kết nối!'; msgDiv.className = 'error'; }
+                        else { msgDiv.innerText = 'Mạng chậm - dùng cache.'; msgDiv.className = 'loading'; }
+                    });
+            }
+
+            function applyFilter() {
+                const statusType = statusFilter.value;
+                const selectedDoctor = doctorFilter.value;
+
+                const selectedKhoa = khoaFilterEl.value;
+
+                const filteredData = globalData.filter(row => {
+                    const isChecked = (row['Check'] === 'TRUE' || row['Check'] === true || row['Check'] === 'true');
+
+                    if (statusType === 'unchecked' && isChecked) return false;
+                    if (statusType === 'checked' && !isChecked) return false;
+
+                    if (selectedDoctor !== 'all' && doctorColumnName) {
+                        let docStr = String(row[doctorColumnName] || '').trim();
+                        const doctorsInRow = docStr.split(/[,;\/]/).map(d => d.trim()).filter(Boolean);
+                        if (!doctorsInRow.includes(selectedDoctor)) return false;
+                    }
+
+                    if (selectedKhoa !== 'all' && khoaColumnName) {
+                        let khoaStr = String(row[khoaColumnName] || '').trim();
+                        if (khoaStr !== selectedKhoa) return false;
+                    }
+                    return true;
+                });
+
+                const now = new Date();
+                const timeString = now.getHours().toString().padStart(2, '0') + ':' +
+                    now.getMinutes().toString().padStart(2, '0') + ':' +
+                    now.getSeconds().toString().padStart(2, '0');
+
+                msgDiv.innerHTML = `Đang hiển thị ${filteredData.length} / ${globalData.length} kết quả (Cập nhật lúc: ${timeString}).`;
+                msgDiv.className = 'success';
+
+                updateKhoaStats();
+
+                const thead = document.getElementById('tableHead');
+                const tbody = document.getElementById('tableBody');
+
+                if (filteredData.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="100%" style="text-align:center;padding:30px;">Không có dữ liệu khớp bộ lọc.</td></tr>';
+                    document.getElementById('dataTable').style.display = 'table';
+                    return;
+                }
+
+                let headers = Object.keys(globalData[0]).filter(h => h !== '_rowIndex');
+                if (!headers.includes('Check')) headers.unshift('Check');
+
+                // Detect sticky columns by name
+                function isMaLK(h) {
+                    const l = h.toLowerCase().trim();
+                    return l.includes('mã lk') || l.includes('malk') || l.includes('mã lượt khám');
+                }
+                function isHoTen(h) {
+                    const l = h.toLowerCase().trim();
+                    return l.includes('họ tên') || l.includes('hoten') || l.includes('tên bệnh nhân') || l.includes('họ và tên');
+                }
+
+                let headerRow = '<tr>';
+                headers.forEach((h, i) => {
+                    let cls = '';
+                    if (isMaLK(h)) cls = ' class="col-fixed-1"';
+                    else if (isHoTen(h)) cls = ' class="col-fixed-2"';
+                    else if (h === 'Check') cls = ' class="check-column"';
+                    else if (isDoneColumn(h)) cls = ' class="check-column"';
+                    const label = h === 'Check' ? 'Trạng thái' : h;
+                    headerRow += `<th${cls}>${label}</th>`;
+                });
+                headerRow += '</tr>';
+                thead.innerHTML = headerRow;
+
+                let bodyRows = '';
+                filteredData.forEach(row => {
+                    const rowIndex = row['_rowIndex'];
+
+                    // Check if this row is done
+                    let isRowDone = false;
+                    headers.forEach(h => {
+                        if (isDoneColumn(h)) {
+                            const cellValue = row[h];
+                            if (cellValue === 'TRUE' || cellValue === true || cellValue === 'true') {
+                                isRowDone = true;
+                            }
+                        }
+                    });
+
+                    const trClass = isRowDone ? 'row-done' : '';
+                    bodyRows += `<tr id="row-${rowIndex}" class="${trClass}">`;
+                    headers.forEach((h, i) => {
+                        const cellValue = row[h] !== undefined ? row[h] : '';
+                        let fixedCls = '';
+                        if (isMaLK(h)) fixedCls = ' col-fixed-1';
+                        else if (isHoTen(h)) fixedCls = ' col-fixed-2';
+
+                        if (h === 'Check') {
+                            const checked = (row[h] === 'TRUE' || row[h] === true) ? 'checked' : '';
+                            bodyRows += `<td class="check-column"><input type="checkbox" ${checked} onchange="updateCheckStatus('${currentSelectedSheet}', ${rowIndex}, this)"></td>`;
+                        } else if (isDoneColumn(h)) {
+                            const doneChecked = (cellValue === 'TRUE' || cellValue === true || cellValue === 'true') ? 'checked' : '';
+                            bodyRows += `<td class="check-column"><input type="checkbox" ${doneChecked} onchange="handleDoneClick('${currentSelectedSheet}', ${rowIndex}, this)"></td>`;
+                        } else if (isCodeColumn(h)) {
+                            bodyRows += `<td class="copyable${fixedCls}" onclick="copyToClipboard('${String(cellValue).replace(/'/g, "\\'")}')">${cellValue}</td>`;
+                        } else {
+                            bodyRows += `<td class="${fixedCls}">${cellValue}</td>`;
+                        }
+                    });
+                    bodyRows += '</tr>';
+                });
+                tbody.innerHTML = bodyRows;
+                document.getElementById('dataTable').style.display = 'table';
+
+                // Tính width cột 1 cố định để cột 2 căn đúng vị trí
+                setTimeout(() => {
+                    const firstFixed = document.querySelector('th.col-fixed-1');
+                    if (firstFixed) {
+                        const w = firstFixed.offsetWidth;
+                        document.querySelector('.table-wrapper').style.setProperty('--col1-width', w + 'px');
+                    }
+                }, 0);
+            }
+
+            function updateCheckStatus(sheetName, rowIndex, checkboxElement) {
+                checkboxElement.disabled = true;
+                let trElement = document.getElementById(`row-${rowIndex}`);
+                trElement.classList.add('saving');
+                let isChecked = checkboxElement.checked;
+                let dateStr = isChecked ? new Date().toLocaleDateString('vi-VN') : '';
+
+                fetch(`${API_URL}?action=updateCheck&sheetName=${encodeURIComponent(sheetName)}&rowIndex=${rowIndex}&isChecked=${isChecked}`)
+                    .then(r => r.json())
+                    .then(result => {
+                        checkboxElement.disabled = false;
+                        trElement.classList.remove('saving');
+                        if (result.status === 'success') {
+                            let rowToUpdate = globalData.find(r => r['_rowIndex'] === rowIndex);
+                            if (rowToUpdate) {
+                                rowToUpdate['Check'] = isChecked ? 'TRUE' : 'FALSE';
+                                rowToUpdate['Ngày sửa'] = dateStr;
+                            }
+                            populateDoctorFilter();
+                            applyFilter();
+                            showUpdateToast();
+                        } else {
+                            alert('Lỗi lưu: ' + result.message);
+                            checkboxElement.checked = !isChecked;
+                        }
+                    })
+                    .catch(() => {
+                        checkboxElement.disabled = false;
+                        trElement.classList.remove('saving');
+                        alert('Mất kết nối!');
+                        checkboxElement.checked = !isChecked;
+                    });
+            }
+
+            window.onclick = function (event) {
+                if (event.target.id === 'statsModal') hideStatsModal();
+                if (event.target.id === 'pwOverlay') cancelPwModal();
+            };
+
+            // ========== Done column with password ==========
+            function handleDoneClick(sheetName, rowIndex, checkbox) {
+                checkbox.checked = !checkbox.checked; // revert first
+                pendingDone = { sheetName, rowIndex, checkbox, isChecked: !checkbox.checked };
+                document.getElementById('pwInput').value = '';
+                document.getElementById('pwError').style.display = 'none';
+                document.getElementById('pwOverlay').classList.add('show');
+                setTimeout(() => document.getElementById('pwInput').focus(), 100);
+            }
+
+            function cancelPwModal() {
+                document.getElementById('pwOverlay').classList.remove('show');
+                pendingDone = null;
+            }
+
+            function confirmPwModal() {
+                const pw = document.getElementById('pwInput').value;
+                if (pw !== DONE_PASSWORD) {
+                    document.getElementById('pwError').style.display = 'block';
+                    document.getElementById('pwInput').value = '';
+                    document.getElementById('pwInput').focus();
+                    return;
+                }
+                document.getElementById('pwOverlay').classList.remove('show');
+                if (pendingDone) {
+                    const { sheetName, rowIndex, checkbox, isChecked } = pendingDone;
+                    checkbox.checked = isChecked;
+                    updateDoneStatus(sheetName, rowIndex, checkbox, isChecked);
+                    pendingDone = null;
+                }
+            }
+
+            // Enter key to confirm
+            document.getElementById('pwInput').addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') confirmPwModal();
+                if (e.key === 'Escape') cancelPwModal();
+            });
+
+            function updateDoneStatus(sheetName, rowIndex, checkboxElement, isChecked) {
+                checkboxElement.disabled = true;
+                let trElement = document.getElementById(`row-${rowIndex}`);
+                trElement.classList.add('saving');
+
+                fetch(`${API_URL}?action=updateDone&sheetName=${encodeURIComponent(sheetName)}&rowIndex=${rowIndex}&isChecked=${isChecked}`)
+                    .then(r => r.json())
+                    .then(result => {
+                        checkboxElement.disabled = false;
+                        trElement.classList.remove('saving');
+                        if (result.status === 'success') {
+                            let rowToUpdate = globalData.find(r => r['_rowIndex'] === rowIndex);
+                            if (rowToUpdate) {
+                                // Find Done column name
+                                const doneCol = Object.keys(rowToUpdate).find(k => isDoneColumn(k));
+                                if (doneCol) rowToUpdate[doneCol] = isChecked ? 'TRUE' : 'FALSE';
+                            }
+
+                            if (isChecked) {
+                                trElement.classList.add('row-done');
+                            } else {
+                                trElement.classList.remove('row-done');
+                            }
+
+                            showUpdateToast();
+                        } else {
+                            alert('Lỗi lưu Done: ' + result.message);
+                            checkboxElement.checked = !isChecked;
+                        }
+                    })
+                    .catch(() => {
+                        checkboxElement.disabled = false;
+                        trElement.classList.remove('saving');
+                        alert('Mất kết nối!');
+                        checkboxElement.checked = !isChecked;
+                    });
+            }
+        </script>
+
+    </div>
+
+    <!-- PAGE 2: INDEX.HTML -->
+    <div id="page-thongke" class="main-page">
+
+        <div class="navbar">
+            <h1>Thống Kê Phân Tích Hồ Sơ Lỗi</h1>
+            <select id="sheetFilter" onchange="idx_applyFilter()"
+                style="padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); outline: none; font-family: 'Inter', sans-serif; font-weight: 600; color: var(--primary); background: var(--card-bg); cursor: pointer;">
+                <option value="ALL">-- Tất cả các tháng (Tất cả Sheet) --</option>
+            </select>
+            <button id="btnReloadTab2" onclick="reloadTab2Data()"
+                style="display:inline-flex; align-items:center; gap:6px; padding:0.5rem 1rem; border-radius:8px; border:none; background:#1976D2; color:#fff; font-family:'Inter',sans-serif; font-weight:600; font-size:0.9rem; cursor:pointer; transition:background 0.2s;"
+                onmouseover="this.style.background='#1251a3'" onmouseout="this.style.background='#1976D2'">
+                <span id="reloadIcon">🔄</span> Tải lại dữ liệu
+            </button>
+            <button class="dark-toggle" id="darkModeToggle" onclick="toggleDarkMode()">
+                <span id="darkModeIcon">🌙</span>
+                <span class="toggle-label" id="darkModeLabel">Dark</span>
+            </button>
+        </div>
+
+        <div class="container">
+            <!-- Loader -->
+            <div id="idx_loader" class="loader-container">
+                <div class="spinner"></div>
+                <div class="loader-text">Đang phân tích dữ liệu từ Google Sheets...</div>
+            </div>
+
+            <!-- Content -->
+            <div id="content" style="display: none; flex-direction: column; flex: 1; overflow: hidden;">
+
+                <!-- Tab Buttons -->
+                <div class="tabs"
+                    style="margin: 1rem 1rem 0 1rem; flex: 0 0 auto; display: flex; justify-content: center; gap: 10px;">
+                    <button class="tab-btn active" onclick="switchTab('tab-danhsach', this)">Danh sách Toàn bộ
+                        Lỗi</button>
+                    <button class="tab-btn" onclick="switchTab('tab-thuocsai', this)">💊 Lỗi thường sai thuốc</button>
+                    <button class="tab-btn" onclick="switchTab('tab-thongke', this)">Thống kê Phân tích</button>
+                </div>
+
+                <!-- Tab 1: Danh sách -->
+                <div id="tab-danhsach" class="card active">
+                    <div class="table-section" style="flex: 1; padding: 1rem;">
+                        <div class="table-wrapper"
+                            style="border: 1px solid var(--border-color); border-radius: 8px; box-shadow: none; height: 100%;">
+                            <table>
+                                <thead style="position: sticky; top: 0; z-index: 2;">
+                                    <tr>
+                                        <th>Mã thuốc</th>
+                                        <th onclick="toggleSortTenThuoc()" style="cursor: pointer; user-select: none;"
+                                            title="Nhấn để sắp xếp Tên thuốc từ A-Z hoặc Z-A">
+                                            Tên thuốc <span id="sortIconTenThuoc"></span>
+                                        </th>
+                                        <th>
+                                            <div style="display: flex; flex-direction: column; gap: 4px;">
+                                                <span>Bác sĩ chỉ định</span>
+                                                <input type="text" id="idx_doctorFilter" oninput="filterTableByDoctor()"
+                                                    onclick="if(this.showPicker) this.showPicker();"
+                                                    placeholder="Tìm tên bác sĩ..." list="doctorList"
+                                                    style="padding: 4px; border-radius: 4px; border: 1px solid var(--border-color); outline: none; background: var(--card-bg); color: var(--text-main); font-family: inherit; font-size: 0.8rem; font-weight: normal; width: 140px;">
+                                                <datalist id="doctorList"></datalist>
+                                            </div>
+                                        </th>
+                                        <th>Lỗi cần chỉnh sửa</th>
+                                        <th>Số lượng</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-danhsach">
+                                    <!-- Dữ liệu danh sách thô sẽ render ở đây -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Lỗi thường sai thuốc -->
+                <div id="tab-thuocsai" class="card">
+                    <div class="table-section" style="flex: 1; padding: 1rem;">
+                        <div
+                            style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px; flex-wrap: wrap;">
+                            <h2 style="margin: 0; color: var(--primary); font-size: 1.1rem; flex-shrink: 0;">💊 Top
+                                thuốc sai nhiều nhất</h2>
+                            <input type="text" id="drugSearchFilter" oninput="renderDrugErrorTable()"
+                                placeholder="🔍 Tìm tên thuốc..."
+                                style="padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border-color); outline: none; font-family: inherit; font-size: 0.85rem; width: 200px; background: var(--card-bg); color: var(--text-main);">
+                            <span id="drugErrorSummary" style="font-size: 0.85rem; color: var(--text-muted);"></span>
+                        </div>
+                        <div class="table-wrapper"
+                            style="border: 1px solid var(--border-color); border-radius: 8px; box-shadow: none; height: 100%;">
+                            <table>
+                                <thead style="position: sticky; top: 0; z-index: 2;">
+                                    <tr>
+                                        <th style="width: 50px; text-align: center;">#</th>
+                                        <th>Mã thuốc</th>
+                                        <th onclick="toggleSortDrugName()" style="cursor: pointer; user-select: none;"
+                                            title="Nhấn để sắp xếp">
+                                            Tên thuốc <span id="sortIconDrug"></span>
+                                        </th>
+                                        <th>Lỗi phổ biến nhất</th>
+                                        <th style="text-align: center;">Số lần sai</th>
+                                        <th style="text-align: center;">Số BS liên quan</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-thuocsai">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Thống kê -->
+                <div id="tab-thongke" class="card">
+                    <div
+                        style="padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); background: var(--card-bg);">
+                        <h2 style="margin: 0; color: var(--primary); font-size: 1.1rem;">Biểu đồ Thống kê Bác Sĩ & Lỗi
+                        </h2>
+                    </div>
+
+                    <!-- Chỉ hiển thị biểu đồ -->
+                    <div
+                        style="flex: 1; padding: 2rem; position: relative; min-height: 500px; width: 100%; box-sizing: border-box;">
+                        <canvas id="errorChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer" style="padding-bottom: 15px;">
+                &copy; 2026 - Công cụ được phát triển bởi <strong>Thanh Tòng</strong>.<br>Phòng KHNV
+            </div>
+        </div>
+
+        <!-- Modal Chi Tiết -->
+        <div id="detailModal" class="modal-overlay" onclick="if(event.target===this) closeModal()">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2 id="modalTitle">Chi tiết</h2>
+                    <button class="modal-close" onclick="closeModal()">&times;</button>
+                </div>
+                <div class="modal-body table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Mã CĐ BN / Lượt</th>
+                                <th>Chẩn đoán ra viện</th>
+                                <th>Các lỗi cần chỉnh sửa</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modal-tbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Drug Detail Modal -->
+        <div id="drugDetailModal" class="drug-modal-overlay" onclick="if(event.target===this) closeDrugModal()">
+            <div class="drug-modal-container">
+                <div class="drug-modal-header">
+                    <div>
+                        <h2 id="drugModalTitle">💊 Chi tiết thuốc</h2>
+                        <div class="drug-meta" id="drugModalMeta"></div>
+                    </div>
+                    <button class="modal-close" onclick="closeDrugModal()">&times;</button>
+                </div>
+                <div class="drug-modal-summary" id="drugModalSummary"></div>
+                <div class="drug-doctor-list" id="drugModalDoctors"></div>
+                <div class="drug-error-list" id="drugModalErrors"></div>
+                <div class="drug-modal-body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:40px">#</th>
+                                <th>Mã CĐ BN / Lượt</th>
+                                <th>Bác sĩ</th>
+                                <th>Chẩn đoán ra viện</th>
+                                <th>Lỗi cần chỉnh sửa</th>
+                            </tr>
+                        </thead>
+                        <tbody id="drugModalTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // THAY ĐƯỜNG LINK WEB APP CỦA BẠN VÀO ĐÂY:
+            const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwFaC8N8ZWo0Yn0B-doaiCEzLhq2xg47pmNtdki33iZ_HJQtyoAZGockymB9UvqUDUs/exec';
+
+            let globalRawData = []; // Lưu trữ dữ liệu gốc để dùng bộ lọc
+            let detailStore = {}; // Lưu trữ dữ liệu cho Modal
+            let globalBacSiData = []; // Lưu trữ dữ liệu bác sĩ để lọc tại bảng
+            let errorChartInstance = null; // Lưu trữ đối tượng biểu đồ
+            let currentSortDirection = null; // Trạng thái sắp xếp Tên thuốc: null, 'asc', 'desc'
+
+            function toggleSortTenThuoc() {
+                if (currentSortDirection === null || currentSortDirection === 'desc') {
+                    currentSortDirection = 'asc';
+                    document.getElementById('sortIconTenThuoc').innerText = ' 🔽';
+                } else {
+                    currentSortDirection = 'desc';
+                    document.getElementById('sortIconTenThuoc').innerText = ' 🔼';
+                }
+                filterTableByDoctor();
+            }
+
+            function processAndRenderData(data) {
+                // Loại bỏ dữ liệu từ các sheet có chữ "Done" trong tên
+                globalRawData = data.filter(row => !row._sheetName || !row._sheetName.toLowerCase().includes('done'));
+
+                // Đổ danh sách các Sheet (Tháng) vào Dropdown
+                const sheetFilter = document.getElementById('sheetFilter');
+                const currentSelection = sheetFilter.value;
+                sheetFilter.innerHTML = '<option value="ALL">-- Tất cả các tháng (Tất cả Sheet) --</option>';
+
+                const uniqueSheets = [...new Set(globalRawData.map(item => item._sheetName))];
+
+                // Sắp xếp giảm dần theo số trong tên Sheet (T12 -> T1)
+                uniqueSheets.sort((a, b) => {
+                    let numA = parseInt((a.match(/\d+/) || [0])[0]);
+                    let numB = parseInt((b.match(/\d+/) || [0])[0]);
+                    return numB - numA;
+                });
+
+                uniqueSheets.forEach(sheet => {
+                    const opt = document.createElement('option');
+                    opt.value = sheet;
+                    opt.textContent = `Dữ liệu: ${sheet}`;
+                    sheetFilter.appendChild(opt);
+                });
+
+                // Giữ lại tháng đang xem nếu có, không thì mặc định là tháng cao nhất
+                if (currentSelection && currentSelection !== 'ALL' && uniqueSheets.includes(currentSelection)) {
+                    sheetFilter.value = currentSelection;
+                } else if (uniqueSheets.length > 0) {
+                    sheetFilter.value = uniqueSheets[0];
+                }
+
+                // Chạy thống kê
+                idx_applyFilter();
+            }
+
+            // ==== LAZY LOAD: Chỉ gọi API khi lần đầu mở tab này ====
+            let tab2Loaded = false;
+
+            function loadTab2Data() {
+                // 1. Tải ngay từ cache nếu có
+                const cachedData = localStorage.getItem('bhxh_data_cache');
+                if (cachedData) {
+                    try {
+                        const parsedData = JSON.parse(cachedData);
+                        if (parsedData && parsedData.length > 0) {
+                            processAndRenderData(parsedData);
+                        }
+                    } catch (e) {
+                        console.error("Lỗi đọc bộ nhớ đệm", e);
+                    }
+                } else {
+                    document.getElementById('idx_loader').textContent = 'Đang tải dữ liệu...';
+                }
+
+                // 2. Gọi API lấy data mới nhất
+                fetch(WEB_APP_URL + '?action=getAllErrors')
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.status === 'success') {
+                            const newDataString = JSON.stringify(result.data);
+                            try {
+                                localStorage.setItem('bhxh_data_cache', newDataString);
+                            } catch (e) {
+                                console.warn("Bộ nhớ đệm đầy, không lưu được dữ liệu offline.");
+                            }
+                            if (cachedData !== newDataString) {
+                                processAndRenderData(result.data);
+                            }
+                        } else if (!cachedData) {
+                            alert('Lỗi tải dữ liệu: ' + result.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi kết nối:', error);
+                        if (!cachedData) {
+                            alert('Không thể kết nối đến máy chủ. Vui lòng kiểm tra mạng!');
+                            document.getElementById('idx_loader').textContent = "Không có kết nối mạng.";
+                        }
+                    });
+
+                tab2Loaded = true;
+            }
+
+            // Expose to global scope để switchMainTab gọi được
+            window.loadTab2Data = loadTab2Data;
+            window.isTab2Loaded = () => tab2Loaded;
+
+            // Hàm tải lại cưỡng bức (bỏ qua cache, gọi API ngay)
+            function reloadTab2Data() {
+                const btn = document.getElementById('btnReloadTab2');
+                const icon = document.getElementById('reloadIcon');
+                if (btn) { btn.disabled = true; btn.style.opacity = '0.6'; }
+                if (icon) icon.textContent = '⏳';
+
+                fetch(WEB_APP_URL + '?action=getAllErrors')
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.status === 'success') {
+                            const newDataString = JSON.stringify(result.data);
+                            try { localStorage.setItem('bhxh_data_cache', newDataString); } catch (e) { }
+                            processAndRenderData(result.data);
+                        } else {
+                            alert('Lỗi tải dữ liệu: ' + result.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi kết nối:', error);
+                        alert('Không thể kết nối đến máy chủ!');
+                    })
+                    .finally(() => {
+                        if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+                        if (icon) icon.textContent = '🔄';
+                    });
+            }
+            window.reloadTab2Data = reloadTab2Data;
+
+            function idx_applyFilter() {
+                const selectedSheet = document.getElementById('sheetFilter').value;
+                let dataToProcess = globalRawData;
+
+                // Xoá trắng ô tìm kiếm bác sĩ khi chuyển tháng
+                const doctorInput = document.getElementById('idx_doctorFilter');
+                if (doctorInput) doctorInput.value = '';
+
+                // Nếu người dùng chọn 1 Sheet cụ thể thì lọc ra
+                if (selectedSheet !== 'ALL') {
+                    dataToProcess = globalRawData.filter(row => row._sheetName === selectedSheet);
+                }
+
+                // Bắt đầu tính toán lại cho Tab Thống kê và Danh sách
+                computeAndRenderStats(dataToProcess);
+            }
+
+            function computeAndRenderStats(rawData) {
+                let statsByThuocBacSiLoi = {};
+
+                // Tự động tính toán (Thống kê) ở dưới máy tính của bạn
+                rawData.forEach(row => {
+                    let loi = row['Các lỗi cần chỉnh sửa'] || '';
+                    let maThuoc = row['Mã thuốc/DVKT/BS'] || '';
+                    let tenThuoc = row['Tên thuốc/DVKT/BS'] || '';
+                    let bacSi = row['Tên Bác Sỹ (Lỗi)'] || row['Bác sĩ chỉ định'] || row['Tên bác sĩ'] || row['Bác sĩ'] || 'Không rõ bác sĩ';
+
+                    // Chỉ lấy những dòng có lỗi cần chỉnh sửa
+                    if (loi) {
+                        let bacSiKey = maThuoc + '|' + tenThuoc + '|' + bacSi + '|' + loi;
+                        if (!statsByThuocBacSiLoi[bacSiKey]) {
+                            statsByThuocBacSiLoi[bacSiKey] = { ma: maThuoc, ten: tenThuoc, bacSi: bacSi, loi: loi, count: 0, rows: [] };
+                        }
+                        statsByThuocBacSiLoi[bacSiKey].count++;
+                        statsByThuocBacSiLoi[bacSiKey].rows.push(row);
+                    }
+                });
+
+                // Sắp xếp theo số lượng (từ cao xuống thấp)
+                let arrBacSi = Object.values(statsByThuocBacSiLoi).sort((a, b) => b.count - a.count);
+
+                // Gửi dữ liệu đã thống kê cho hàm vẽ giao diện
+                renderData(arrBacSi);
+
+                // === Tính toán cho Tab "Lỗi thường sai thuốc" ===
+                computeDrugErrors(rawData);
+            }
+
+            function renderData(bacSiData) {
+                globalBacSiData = bacSiData; // Lưu lại để dùng cho bộ lọc bác sĩ
+                document.getElementById('idx_loader').style.display = 'none';
+                document.getElementById('content').style.display = 'flex';
+
+                // Cập nhật danh sách Bác sĩ vào Datalist để có gợi ý khi gõ
+                const doctorList = document.getElementById('doctorList');
+                if (doctorList) {
+                    doctorList.innerHTML = '';
+                    const uniqueDoctors = [...new Set(bacSiData.map(item => item.bacSi))].sort();
+                    uniqueDoctors.forEach(doc => {
+                        const opt = document.createElement('option');
+                        opt.value = doc;
+                        doctorList.appendChild(opt);
+                    });
+                }
+
+                // Vẽ bảng
+                filterTableByDoctor();
+            }
+
+            function filterTableByDoctor() {
+                const filterInput = document.getElementById('idx_doctorFilter');
+                let searchText = filterInput ? filterInput.value.trim().toLowerCase() : '';
+                let dataToRender = globalBacSiData;
+
+                if (searchText === 'all' || searchText === 'tất cả') {
+                    searchText = '';
+                    if (filterInput) filterInput.value = '';
+                }
+
+                if (searchText !== '') {
+                    dataToRender = globalBacSiData.filter(item => item.bacSi.toLowerCase().includes(searchText));
+                } else {
+                    // Tạo bản sao để không làm thay đổi globalBacSiData gốc khi sort
+                    dataToRender = [...globalBacSiData];
+                }
+
+                // Xử lý sắp xếp theo Tên thuốc
+                if (currentSortDirection === 'asc') {
+                    dataToRender.sort((a, b) => a.ten.localeCompare(b.ten, 'vi'));
+                } else if (currentSortDirection === 'desc') {
+                    dataToRender.sort((a, b) => b.ten.localeCompare(a.ten, 'vi'));
+                }
+
+                detailStore = {}; // Xoá data modal cũ
+                const tbodyDanhSach = document.getElementById('tbody-danhsach');
+                if (tbodyDanhSach) {
+                    tbodyDanhSach.innerHTML = '';
+                    dataToRender.forEach((item, i) => {
+                        let key = 'bacsi_' + i;
+                        detailStore[key] = item.rows;
+                        tbodyDanhSach.innerHTML += `<tr><td>${item.ma}</td><td>${item.ten}</td><td>${item.bacSi}</td><td>${item.loi}</td><td><span class="badge clickable-badge" onclick="openModal('${key}', 'Bác sĩ: ${item.bacSi} - Thuốc: ${item.ten}')">${item.count}</span></td></tr>`;
+                    });
+                }
+
+                // Vẽ biểu đồ
+                renderChart(dataToRender);
+            }
+
+            function renderChart(dataToRender) {
+                // Gom nhóm tính tổng số lỗi của từng Bác sĩ
+                const doctorCounts = {};
+                dataToRender.forEach(item => {
+                    if (!doctorCounts[item.bacSi]) doctorCounts[item.bacSi] = 0;
+                    doctorCounts[item.bacSi] += item.count;
+                });
+
+                // Sắp xếp số lượng lỗi giảm dần và lấy Top 15
+                const sortedDoctors = Object.keys(doctorCounts).map(name => ({
+                    name: name,
+                    count: doctorCounts[name]
+                })).sort((a, b) => b.count - a.count).slice(0, 15);
+
+                const ctx = document.getElementById('errorChart').getContext('2d');
+
+                // Xoá biểu đồ cũ nếu có trước khi vẽ cái mới
+                if (errorChartInstance) {
+                    errorChartInstance.destroy();
+                }
+
+                const isDark = document.body.classList.contains('dark-mode');
+
+                // Tạo màu sắc Gradient đẹp mắt từ trái sang phải
+                let gradient = ctx.createLinearGradient(0, 0, 600, 0);
+                gradient.addColorStop(0, '#6366f1');
+                gradient.addColorStop(1, '#a855f7');
+
+                errorChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    plugins: [ChartDataLabels], // Đăng ký plugin hiển thị số liệu
+                    data: {
+                        labels: sortedDoctors.map(d => d.name),
+                        datasets: [{
+                            label: ' Số lượng lỗi',
+                            data: sortedDoctors.map(d => d.count),
+                            backgroundColor: gradient,
+                            borderRadius: 6,
+                            borderSkipped: false
+                        }]
+                    },
+                    options: {
+                        animation: { duration: 0 },
+                        hover: { animationDuration: 0 },
+                        responsiveAnimationDuration: 0,
+                        events: [],
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            title: {
+                                display: true,
+                                text: 'Top Bác sĩ có nhiều lỗi nhất',
+                                font: { size: 16, family: 'Inter', weight: '600' },
+                                color: isDark ? '#e2e8f0' : '#1e293b',
+                                padding: { bottom: 20 }
+                            },
+                            tooltip: { enabled: false },
+                            datalabels: {
+                                anchor: 'end',
+                                align: 'end',
+                                color: isDark ? '#e2e8f0' : '#1e293b',
+                                font: {
+                                    family: 'Inter',
+                                    size: 13,
+                                    weight: 'bold'
+                                },
+                                formatter: (value) => value
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                ticks: { precision: 0, color: isDark ? '#94a3b8' : '#334155' },
+                                grid: { color: isDark ? '#334155' : '#f1f5f9' }
+                            },
+                            y: {
+                                grid: { display: false },
+                                ticks: { font: { family: 'Inter', size: 13 }, color: isDark ? '#e2e8f0' : '#334155' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Functions cho Modal
+            function openModal(storeKey, title) {
+                document.getElementById('modalTitle').textContent = title;
+                const rows = detailStore[storeKey] || [];
+                const tbody = document.getElementById('modal-tbody');
+                tbody.innerHTML = '';
+
+                rows.forEach(row => {
+                    let maCDBN = row['Mã CĐ BN / Lượt'] || '';
+                    let chanDoan = row['Chẩn đoán ra viện'] || '';
+                    let loi = row['Các lỗi cần chỉnh sửa'] || '';
+
+                    tbody.innerHTML += `<tr>
+                    <td>${maCDBN}</td>
+                    <td>${chanDoan}</td>
+                    <td>${loi}</td>
+                </tr>`;
+                });
+
+                document.getElementById('detailModal').classList.add('show');
+            }
+
+            function closeModal() {
+                document.getElementById('detailModal').classList.remove('show');
+            }
+
+            // Functions cho Tabs
+            function switchTab(tabId, btnElement) {
+                // Tắt active ở tất cả các tab-btn
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                // Ẩn tất cả các card bằng cách set display = none trực tiếp
+                document.querySelectorAll('.card').forEach(card => {
+                    card.classList.remove('active');
+                    card.style.display = 'none';
+                });
+
+                // Bật active cho button được click
+                if (btnElement) {
+                    btnElement.classList.add('active');
+                }
+                // Hiện tab được chọn
+                const target = document.getElementById(tabId);
+                target.classList.add('active');
+                target.style.display = 'flex';
+            }
+
+            // Hàm xoá bỏ renderDanhSach (vì đã dùng filterTableByDoctor)
+
+            // ========== TAB 3: Lỗi thường sai thuốc ==========
+            let globalDrugErrors = []; // Dữ liệu gom nhóm theo thuốc
+            let drugSortDirection = null; // null, 'asc', 'desc'
+
+            function toggleSortDrugName() {
+                if (drugSortDirection === null || drugSortDirection === 'desc') {
+                    drugSortDirection = 'asc';
+                    document.getElementById('sortIconDrug').innerText = ' 🔽';
+                } else {
+                    drugSortDirection = 'desc';
+                    document.getElementById('sortIconDrug').innerText = ' 🔼';
+                }
+                renderDrugErrorTable();
+            }
+
+            function computeDrugErrors(rawData) {
+                // Gom nhóm theo Tên thuốc
+                const drugMap = {};
+
+                rawData.forEach(row => {
+                    let loi = row['Các lỗi cần chỉnh sửa'] || '';
+                    let maThuoc = row['Mã thuốc/DVKT/BS'] || '';
+                    let tenThuoc = (row['Tên thuốc/DVKT/BS'] || '').trim();
+                    let bacSi = row['Tên Bác Sỹ (Lỗi)'] || row['Bác sĩ chỉ định'] || row['Tên bác sĩ'] || row['Bác sĩ'] || 'Không rõ bác sĩ';
+
+                    if (!loi || !tenThuoc) return;
+
+                    const drugKey = maThuoc + '|' + tenThuoc;
+                    if (!drugMap[drugKey]) {
+                        drugMap[drugKey] = {
+                            ma: maThuoc,
+                            ten: tenThuoc,
+                            totalCount: 0,
+                            doctors: new Set(),
+                            errorTypes: {},
+                            rows: []
+                        };
+                    }
+                    drugMap[drugKey].totalCount++;
+                    drugMap[drugKey].doctors.add(bacSi);
+                    drugMap[drugKey].rows.push(row);
+
+                    // Đếm loại lỗi phổ biến nhất
+                    if (!drugMap[drugKey].errorTypes[loi]) drugMap[drugKey].errorTypes[loi] = 0;
+                    drugMap[drugKey].errorTypes[loi]++;
+                });
+
+                // Convert map sang array, sắp xếp giảm dần theo tổng số lần sai
+                globalDrugErrors = Object.values(drugMap).map(item => {
+                    // Tìm lỗi phổ biến nhất
+                    let topError = '';
+                    let topErrorCount = 0;
+                    Object.entries(item.errorTypes).forEach(([err, cnt]) => {
+                        if (cnt > topErrorCount) { topError = err; topErrorCount = cnt; }
+                    });
+                    return {
+                        ma: item.ma,
+                        ten: item.ten,
+                        totalCount: item.totalCount,
+                        doctorCount: item.doctors.size,
+                        topError: topError,
+                        topErrorCount: topErrorCount,
+                        totalErrors: Object.keys(item.errorTypes).length,
+                        rows: item.rows
+                    };
+                }).sort((a, b) => b.totalCount - a.totalCount);
+
+                renderDrugErrorTable();
+            }
+
+            function renderDrugErrorTable() {
+                const tbody = document.getElementById('tbody-thuocsai');
+                const summary = document.getElementById('drugErrorSummary');
+                const searchInput = document.getElementById('drugSearchFilter');
+                const searchText = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
+                if (!tbody) return;
+
+                let dataToRender = [...globalDrugErrors];
+
+                // Lọc theo tên thuốc
+                if (searchText) {
+                    dataToRender = dataToRender.filter(item =>
+                        item.ten.toLowerCase().includes(searchText) ||
+                        item.ma.toLowerCase().includes(searchText)
+                    );
+                }
+
+                // Sắp xếp
+                if (drugSortDirection === 'asc') {
+                    dataToRender.sort((a, b) => a.ten.localeCompare(b.ten, 'vi'));
+                } else if (drugSortDirection === 'desc') {
+                    dataToRender.sort((a, b) => b.ten.localeCompare(a.ten, 'vi'));
+                }
+
+                // Cập nhật summary
+                const totalDrugs = dataToRender.length;
+                const totalErrors = dataToRender.reduce((sum, d) => sum + d.totalCount, 0);
+                if (summary) summary.textContent = `${totalDrugs} loại thuốc — ${totalErrors} lỗi tổng cộng`;
+
+                // Vẽ bảng
+                tbody.innerHTML = '';
+                if (dataToRender.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:#94a3b8;">Không tìm thấy thuốc phù hợp.</td></tr>';
+                    return;
+                }
+
+                dataToRender.forEach((item, i) => {
+                    const key = 'drug_' + i;
+                    detailStore[key] = item.rows;
+
+                    // Tạo thanh progress nhỏ (visual indicator)
+                    const maxCount = globalDrugErrors.length > 0 ? globalDrugErrors[0].totalCount : 1;
+                    const pct = Math.round((item.totalCount / maxCount) * 100);
+                    const barColor = pct >= 70 ? '#ef4444' : pct >= 40 ? '#f59e0b' : '#22c55e';
+
+                    tbody.innerHTML += `<tr class="drug-row-clickable" onclick="openDrugDetailModal(${i})">
+                    <td style="text-align: center; font-weight: 600; color: ${i < 3 ? '#ef4444' : '#64748b'};">${i + 1}</td>
+                    <td>${item.ma}</td>
+                    <td style="font-weight: 500;">${item.ten}</td>
+                    <td>
+                        <span style="font-size: 0.85rem;">${item.topError}</span>
+                        ${item.totalErrors > 1 ? '<span style="font-size: 0.75rem; color: #94a3b8; margin-left: 4px;">(+' + (item.totalErrors - 1) + ' lỗi khác)</span>' : ''}
+                    </td>
+                    <td style="text-align: center;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            <div style="width: 50px; height: 6px; background: var(--border-color); border-radius: 3px; overflow: hidden;">
+                                <div style="width: ${pct}%; height: 100%; background: ${barColor}; border-radius: 3px;"></div>
+                            </div>
+                            <span class="badge clickable-badge">${item.totalCount}</span>
+                        </div>
+                    </td>
+                    <td style="text-align: center; color: var(--text-muted);">${item.doctorCount}</td>
+                </tr>`;
+                });
+            }
+
+            // ========== Drug Detail Modal ==========
+            let currentDrugRenderList = []; // lưu lại danh sách đang render để modal dùng index
+            let currentDrugItem = null; // item đang hiển thị trong modal
+            let currentDrugDoctorFilter = null; // bác sĩ đang lọc (null = tất cả)
+
+            function renderDrugErrorTableWithTracking() {
+                // Gọi hàm render gốc, rồi lưu lại danh sách
+                // (đã tích hợp vào renderDrugErrorTable phía trên)
+            }
+
+            function openDrugDetailModal(renderIndex) {
+                // Tìm item từ tbody hiện tại qua index
+                const tbody = document.getElementById('tbody-thuocsai');
+                if (!tbody) return;
+
+                // Rebuild lại data giống renderDrugErrorTable để lấy đúng item
+                const searchInput = document.getElementById('drugSearchFilter');
+                const searchText = searchInput ? searchInput.value.trim().toLowerCase() : '';
+                let dataToRender = [...globalDrugErrors];
+                if (searchText) {
+                    dataToRender = dataToRender.filter(item =>
+                        item.ten.toLowerCase().includes(searchText) ||
+                        item.ma.toLowerCase().includes(searchText)
+                    );
+                }
+                if (drugSortDirection === 'asc') {
+                    dataToRender.sort((a, b) => a.ten.localeCompare(b.ten, 'vi'));
+                } else if (drugSortDirection === 'desc') {
+                    dataToRender.sort((a, b) => b.ten.localeCompare(a.ten, 'vi'));
+                }
+
+                const item = dataToRender[renderIndex];
+                if (!item) return;
+
+                // Header
+                document.getElementById('drugModalTitle').textContent = '💊 ' + item.ten;
+                document.getElementById('drugModalMeta').innerHTML =
+                    `<span class="drug-meta-tag" style="background: #e0e7ff; color: #3730a3;">Mã: ${item.ma}</span>` +
+                    `<span class="drug-meta-tag" style="background: #fce7f3; color: #be185d;">${item.totalCount} lần sai</span>` +
+                    `<span class="drug-meta-tag" style="background: #ecfdf5; color: #065f46;">${item.doctorCount} bác sĩ liên quan</span>`;
+
+                // Summary cards
+                const errorTypeCounts = {};
+                const doctorCounts = {};
+                item.rows.forEach(row => {
+                    const loi = row['Các lỗi cần chỉnh sửa'] || 'Không rõ';
+                    const bs = row['Tên Bác Sỹ (Lỗi)'] || row['Bác sĩ chỉ định'] || row['Tên bác sĩ'] || row['Bác sĩ'] || 'Không rõ';
+                    errorTypeCounts[loi] = (errorTypeCounts[loi] || 0) + 1;
+                    doctorCounts[bs] = (doctorCounts[bs] || 0) + 1;
+                });
+
+                const topDoctor = Object.entries(doctorCounts).sort((a, b) => b[1] - a[1])[0];
+                const errorTypeCount = Object.keys(errorTypeCounts).length;
+
+                document.getElementById('drugModalSummary').innerHTML =
+                    `<div class="drug-summary-card"><div class="val" style="color: #ef4444;">${item.totalCount}</div><div class="label">Tổng lần sai</div></div>` +
+                    `<div class="drug-summary-card"><div class="val" style="color: #6366f1;">${errorTypeCount}</div><div class="label">Loại lỗi khác nhau</div></div>` +
+                    `<div class="drug-summary-card"><div class="val" style="color: #0891b2;">${item.doctorCount}</div><div class="label">Bác sĩ liên quan</div></div>` +
+                    `<div class="drug-summary-card"><div class="val" style="color: #d97706; font-size: 0.9rem;">${topDoctor ? topDoctor[0] : '—'}</div><div class="label">BS sai nhiều nhất (${topDoctor ? topDoctor[1] : 0} lần)</div></div>`;
+
+                // Lưu item hiện tại để dùng cho filter
+                currentDrugItem = item;
+                currentDrugDoctorFilter = null;
+
+                // Doctor chips (clickable)
+                const sortedDoctors = Object.entries(doctorCounts).sort((a, b) => b[1] - a[1]);
+                document.getElementById('drugModalDoctors').innerHTML =
+                    '<span class="section-label">👨‍⚕️ Bác sĩ liên quan:</span>' +
+                    '<span class="drug-doctor-chip active" onclick="filterDrugModalByDoctor(null, this)">Tất cả <span class="chip-count">' + item.rows.length + '</span></span>' +
+                    sortedDoctors.map(([name, cnt]) => {
+                        const safeName = name.replace(/'/g, "\\'");
+                        return `<span class="drug-doctor-chip" onclick="filterDrugModalByDoctor('${safeName}', this)">${name} <span class="chip-count">${cnt}</span></span>`;
+                    }).join('');
+
+                // Error chips
+                const sortedErrors = Object.entries(errorTypeCounts).sort((a, b) => b[1] - a[1]);
+                document.getElementById('drugModalErrors').innerHTML =
+                    '<span style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); margin-right: 6px; white-space: nowrap;">⚠️ Các loại lỗi:</span>' +
+                    sortedErrors.map(([err, cnt]) =>
+                        `<span class="drug-error-chip">${err} <strong>(${cnt})</strong></span>`
+                    ).join('');
+
+                // Render detail table
+                renderDrugModalTable(item.rows);
+
+                document.getElementById('drugDetailModal').classList.add('show');
+            }
+
+            function filterDrugModalByDoctor(doctorName, chipEl) {
+                currentDrugDoctorFilter = doctorName;
+
+                // Cập nhật active state cho chips
+                document.querySelectorAll('#drugModalDoctors .drug-doctor-chip').forEach(c => c.classList.remove('active'));
+                if (chipEl) chipEl.classList.add('active');
+
+                if (!currentDrugItem) return;
+
+                // Lọc rows theo bác sĩ
+                let filteredRows = currentDrugItem.rows;
+                if (doctorName) {
+                    filteredRows = currentDrugItem.rows.filter(row => {
+                        const bs = row['Tên Bác Sỹ (Lỗi)'] || row['Bác sĩ chỉ định'] || row['Tên bác sĩ'] || row['Bác sĩ'] || 'Không rõ';
+                        return bs === doctorName;
+                    });
+                }
+
+                renderDrugModalTable(filteredRows);
+            }
+
+            function renderDrugModalTable(rows) {
+                const dtbody = document.getElementById('drugModalTbody');
+                dtbody.innerHTML = '';
+
+                if (rows.length === 0) {
+                    dtbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:#94a3b8;">Không có dữ liệu.</td></tr>';
+                    return;
+                }
+
+                rows.forEach((row, idx) => {
+                    const maCDBN = row['Mã CĐ BN / Lượt'] || '';
+                    const bacSi = row['Tên Bác Sỹ (Lỗi)'] || row['Bác sĩ chỉ định'] || row['Tên bác sĩ'] || row['Bác sĩ'] || '';
+                    const chanDoan = row['Chẩn đoán ra viện'] || '';
+                    const loi = row['Các lỗi cần chỉnh sửa'] || '';
+                    dtbody.innerHTML += `<tr>
+                    <td style="text-align:center; color: #94a3b8;">${idx + 1}</td>
+                    <td style="font-weight: 500;">${maCDBN}</td>
+                    <td>${bacSi}</td>
+                    <td>${chanDoan}</td>
+                    <td style="color: #dc2626;">${loi}</td>
+                </tr>`;
+                });
+            }
+
+            function closeDrugModal() {
+                document.getElementById('drugDetailModal').classList.remove('show');
+                currentDrugItem = null;
+                currentDrugDoctorFilter = null;
+            }
+
+            // ========== Dark Mode ==========
+            function toggleDarkMode() {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                localStorage.setItem('bhxh_darkmode', isDark ? '1' : '0');
+                updateDarkModeUI(isDark);
+
+                // Cập nhật chart nếu đang hiển thị
+                if (errorChartInstance) {
+                    const textColor = isDark ? '#e2e8f0' : '#334155';
+                    const gridColor = isDark ? '#334155' : '#f1f5f9';
+                    errorChartInstance.options.scales.x.ticks.color = textColor;
+                    errorChartInstance.options.scales.x.grid.color = gridColor;
+                    errorChartInstance.options.scales.y.ticks.color = textColor;
+                    errorChartInstance.options.plugins.legend.labels.color = textColor;
+                    errorChartInstance.update();
+                }
+            }
+
+            function updateDarkModeUI(isDark) {
+                document.getElementById('darkModeIcon').textContent = isDark ? '☀️' : '🌙';
+                document.getElementById('darkModeLabel').textContent = isDark ? 'Light' : 'Dark';
+            }
+
+            // Khởi tạo dark mode từ localStorage
+            (function () {
+                const saved = localStorage.getItem('bhxh_darkmode');
+                if (saved === '1') {
+                    document.body.classList.add('dark-mode');
+                    updateDarkModeUI(true);
+                }
+            })();
+        </script>
+
+    </div>
+
+    <script>
+        // Track tab-1 init
+        let tab1Initialized = false;
+
+        function switchMainTab(pageId, btnEl) {
+            document.querySelectorAll('.main-tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.main-page').forEach(p => p.classList.remove('active'));
+            btnEl.classList.add('active');
+            document.getElementById(pageId).classList.add('active');
+
+            // ==== LAZY API: Chỉ gọi API của tab đang hiển thị ====
+            if (pageId === 'page-thongke') {
+                // Tab 2 (Ngoại trú): chỉ gọi API lần đầu tiên
+                if (typeof window.isTab2Loaded === 'function' && !window.isTab2Loaded()) {
+                    window.loadTab2Data();
+                }
+            }
+            // Tab 1 (Nội trú) không cần xử lý ở đây vì đã init qua window.onload
+        }
+    </script>
+</body>
+
+</html>
